@@ -2,7 +2,7 @@
   import { browser, dev } from '$app/environment';
   import { page } from '$app/stores';
   // @ts-ignore
-  import { VERCEL_ANALYTICS_ID } from '$env/static/public';
+  import { VERCEL_ANALYTICS_ID } from '$env/dynamic/public';
   import { inject } from '@vercel/analytics';
   import { webVitals } from '$lib/vitals';
 
