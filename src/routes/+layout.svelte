@@ -3,7 +3,7 @@
   import { page } from '$app/stores';
   import { inject } from '@vercel/analytics';
   import { webVitals } from '$lib/vitals';
-  import { LightSwitch, setInitialClassState } from '$components/LightSwitch';
+  import { LightSwitch, setInitialClassState } from '$components/lightSwitch';
 
   import '../app.postcss';
 
