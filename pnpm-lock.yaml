@@ -26,6 +26,9 @@ dependencies:
   tailwindcss-animate:
     specifier: ^1.0.6
     version: 1.0.6(tailwindcss@3.3.2)
+  web-vitals:
+    specifier: ^3.3.2
+    version: 3.3.2
 
 devDependencies:
   '@sveltejs/kit':
@@ -2342,6 +2345,10 @@ packages:
         optional: true
     dependencies:
       vite: 4.3.9
+
+  /web-vitals@3.3.2:
+    resolution: {integrity: sha512-qRkpmSeKfEWAzNhtX541xA8gCJ+pqCqBmUlDVkVDSCSYUvfvNqF+k9g8I+uyreRcDBdfiJrd0/aLbTy5ydo49Q==}
+    dev: false
 
   /webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}

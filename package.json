@@ -39,6 +39,7 @@
     "clsx": "^1.2.1",
     "lucide-svelte": "^0.241.0",
     "tailwind-merge": "^1.13.1",
-    "tailwindcss-animate": "^1.0.6"
+    "tailwindcss-animate": "^1.0.6",
+    "web-vitals": "^3.3.2"
   }
 }
