@@ -3,6 +3,7 @@
   import { page } from '$app/stores';
   import { inject } from '@vercel/analytics';
   import { webVitals } from '$lib/vitals';
+  import { LightSwitch, setInitialClassState } from '$components/LightSwitch';
 
   import '../app.postcss';
 
@@ -20,4 +21,12 @@
   inject({ mode: dev ? 'development' : 'production' });
 </script>
 
-<slot />
+<svelte:head>
+  {@html `<\u{73}cript nonce="%sveltekit.nonce%">(${setInitialClassState.toString()})();</script>`}
+</svelte:head>
+
+<div class="container">
+  <LightSwitch />
+
+  <slot />
+</div>
