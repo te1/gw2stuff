@@ -11,11 +11,11 @@
 
   function onToggleHandler(): void {
     $modeCurrent = !$modeCurrent;
+
     setModeUserPrefers($modeCurrent);
     setModeCurrent($modeCurrent);
   }
 
-  // A11y Input Handlers
   function onKeyDown(event: OnKeyDownEvent): void {
     // Enter/Space triggers selection event
     if (['Enter', 'Space'].includes(event.code)) {
@@ -24,7 +24,6 @@
     }
   }
 
-  // Lifecycle
   onMount(() => {
     // Sync lightswitch with the theme
     if (!('modeCurrent' in localStorage)) {
@@ -52,7 +51,7 @@
         size: 'sm',
         variant: 'ghost',
       }),
-      'w-9 px-0'
+      'w-9 cursor-pointer px-0'
     )}
   >
     {#if $modeCurrent}
