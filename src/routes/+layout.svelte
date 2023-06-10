@@ -1,18 +1,18 @@
 <script>
   import { browser, dev } from '$app/environment';
   import { page } from '$app/stores';
+  // @ts-ignore
+  import { VERCEL_ANALYTICS_ID } from '$env/static/private';
   import { inject } from '@vercel/analytics';
   import { webVitals } from '$lib/vitals';
 
   import '../app.postcss';
 
-  let analyticsId = import.meta.env.VERCEL_ANALYTICS_ID;
-
-  $: if (browser && analyticsId) {
+  $: if (browser && VERCEL_ANALYTICS_ID) {
     webVitals({
       path: $page.url.pathname,
       params: $page.params,
-      analyticsId,
+      analyticsId: VERCEL_ANALYTICS_ID,
       debug: false,
     });
   }
