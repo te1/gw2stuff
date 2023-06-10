@@ -4,7 +4,9 @@ import tailwindcssAnimate from 'tailwindcss-animate';
 /** @type {import('tailwindcss').Config} */
 const config = {
   darkMode: ['class'],
+
   content: ['./src/**/*.{html,js,svelte,ts}'],
+
   theme: {
     container: {
       center: true,
@@ -13,6 +15,7 @@ const config = {
         '2xl': '1400px',
       },
     },
+
     extend: {
       colors: {
         border: 'hsl(var(--border))',
@@ -49,16 +52,19 @@ const config = {
           foreground: 'hsl(var(--card-foreground))',
         },
       },
+
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+
       fontFamily: {
         sans: [...fontFamily.sans],
       },
     },
   },
+
   plugins: [tailwindcssAnimate],
 };
 
