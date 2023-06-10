@@ -3,9 +3,11 @@
   import { page } from '$app/stores';
   import { inject } from '@vercel/analytics';
   import { webVitals } from '$lib/webVitals';
-  import { LightSwitch, setInitialClassState } from '$components/lightSwitch';
+  import { setInitialClassState } from '$components/lightSwitch';
 
   import '../app.postcss';
+  import AppHeader from '$components/AppHeader.svelte';
+  import AppFooter from '$components/AppFooter.svelte';
 
   const analyticsId = import.meta.env.VERCEL_ANALYTICS_ID;
 
@@ -26,7 +28,7 @@
 </svelte:head>
 
 <div class="container">
-  <LightSwitch />
-
+  <AppHeader />
   <slot />
+  <AppFooter />
 </div>
