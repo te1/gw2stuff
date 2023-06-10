@@ -1,13 +1,13 @@
 // https://github.com/huntabyte/shadcn-svelte/tree/main/apps/www/src/lib/components/docs/light-switch
 
+import { get } from 'svelte/store';
+import { persisted } from 'svelte-local-storage-store';
+
 export { default as LightSwitch } from './LightSwitch.svelte';
 
-import { get } from 'svelte/store';
-import { localStorageStore } from './localStorageStore';
-
-export const modeOsPrefers = localStorageStore<boolean>('modeOsPrefers', false);
-export const modeUserPrefers = localStorageStore<boolean | undefined>('modeUserPrefers', undefined);
-export const modeCurrent = localStorageStore<boolean>('modeCurrent', false);
+export const modeOsPrefers = persisted<boolean>('modeOsPrefers', false);
+export const modeUserPrefers = persisted<boolean | undefined>('modeUserPrefers', undefined);
+export const modeCurrent = persisted<boolean>('modeCurrent', false);
 
 export function getModeOsPrefers(): boolean {
   const prefersLightMode = window.matchMedia('(prefers-color-scheme: light)').matches;
