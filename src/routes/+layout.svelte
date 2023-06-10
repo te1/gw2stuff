@@ -2,7 +2,7 @@
   import { browser, dev } from '$app/environment';
   import { page } from '$app/stores';
   import { inject } from '@vercel/analytics';
-  import { webVitals } from '$lib/vitals';
+  import { webVitals } from '$lib/webVitals';
   import { LightSwitch, setInitialClassState } from '$components/lightSwitch';
 
   import '../app.postcss';
