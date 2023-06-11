@@ -54,6 +54,8 @@
       displayMessage = 'API key is valid';
     } else if (message) {
       displayMessage = message;
+    } else if (!$apiKeyValid) {
+      displayMessage = 'Invalid API key';
     } else {
       displayMessage = '';
     }
@@ -155,3 +157,9 @@
     to you, your account, characters or items.
   </span>
 </aside>
+
+{#if $apiKeyValid}
+  <section class="mt-4" in:fade|local>
+    Your API key is valid. You can <a href="/" class="link">go find your stuff</a> now.
+  </section>
+{/if}
