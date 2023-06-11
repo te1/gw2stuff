@@ -8,7 +8,7 @@
 
   export let data;
 
-  let formRef;
+  let formRef: HTMLFormElement;
 
   let apiKeyStatus: { valid: boolean; message: string } | null = null;
 
