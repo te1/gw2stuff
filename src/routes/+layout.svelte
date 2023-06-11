@@ -20,7 +20,9 @@
     });
   }
 
-  inject({ mode: dev ? 'development' : 'production' });
+  if (!dev) {
+    inject({ mode: dev ? 'development' : 'production' });
+  }
 </script>
 
 <svelte:head>
