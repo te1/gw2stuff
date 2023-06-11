@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { persisted } from 'svelte-local-storage-store';
   import { superForm } from 'sveltekit-superforms/client';
   import { X, Save } from 'lucide-svelte';
   import { Button } from '$components/ui/button';
   import { Input } from '$components/ui/input';
+  import { apiKey, apiKeyValid } from '$lib/store';
 
   export let data;
 
@@ -21,6 +21,8 @@
           valid: result.data?.valid ?? false,
           message: result.data?.message ?? '',
         };
+
+        $apiKeyValid = apiKeyStatus.valid;
       }
     },
     onUpdated({ form }) {
@@ -33,10 +35,7 @@
   });
 
   // restore API key from local storage
-  export const apiKey = persisted<string>('apiKey', '');
-
   if ($apiKey) {
-    // if there was an apiKey then update the form to show it
     $form.apiKey = $apiKey;
   }
 
@@ -55,6 +54,8 @@
       valid: false,
       message: '',
     };
+
+    $apiKeyValid = false;
   }
 </script>
 
