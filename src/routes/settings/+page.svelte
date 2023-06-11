@@ -54,7 +54,7 @@
       displayMessage = 'API key is valid';
     } else if (message) {
       displayMessage = message;
-    } else if (!$apiKeyValid) {
+    } else if ($apiKeyValid === false) {
       displayMessage = 'Invalid API key';
     } else {
       displayMessage = '';
