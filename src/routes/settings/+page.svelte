@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { superForm } from 'sveltekit-superforms/client';
-  import { X, Save } from 'lucide-svelte';
+  import { Loader2, Save, X } from 'lucide-svelte';
   import { Button } from '$components/ui/button';
   import { Input } from '$components/ui/input';
   import { Label } from '$components/ui/label';
@@ -13,7 +13,7 @@
 
   let apiKeyStatus: { valid: boolean; message: string } | null = null;
 
-  const { form, enhance, errors } = superForm(data.form, {
+  const { form, enhance, errors, submitting, delayed } = superForm(data.form, {
     onResult({ result }) {
       // keep additional response data from form submission
 
@@ -60,7 +60,7 @@
   }
 </script>
 
-<form method="POST" use:enhance bind:this={formRef}>
+<form method="POST" autocomplete="off" use:enhance bind:this={formRef}>
   <div class="mb-4 grid w-full max-w-xl items-center gap-2">
     <Label for="apiKey">API Key</Label>
 
@@ -75,7 +75,9 @@
     />
 
     <span class={$errors.apiKey || !apiKeyStatus?.valid ? 'text-error' : 'text-success'}>
-      {#if $errors.apiKey}
+      {#if $submitting}
+        &nbsp;
+      {:else if $errors.apiKey}
         {$errors.apiKey}
       {:else if apiKeyStatus?.valid}
         API key is valid
@@ -87,15 +89,21 @@
     </span>
   </div>
 
-  <Button type="reset" variant="secondary" on:click={clearApiKey}>
-    <X class="mr-2 h-5 w-5" />
-    Clear
-  </Button>
+  <div class="space-x-1">
+    <Button type="submit" size="sm" disabled={$submitting}>
+      {#if $delayed}
+        <Loader2 class="mr-2 h-5 w-5 animate-spin" />
+      {:else}
+        <Save class="mr-2 h-5 w-5" />
+      {/if}
+      Save
+    </Button>
 
-  <Button type="submit">
-    <Save class="mr-2 h-5 w-5" />
-    Save
-  </Button>
+    <Button type="reset" size="sm" variant="secondary" on:click={clearApiKey}>
+      <X class="mr-2 h-5 w-5" />
+      Clear
+    </Button>
+  </div>
 </form>
 
 <ol class="ml-4 mt-8 list-decimal">
