@@ -66,7 +66,7 @@
     <span class="invalid">{$errors.apiKey}</span>
   {/if}
 
-  <Button type="reset" on:click={clearApiKey}>
+  <Button type="reset" variant="secondary" on:click={clearApiKey}>
     <X class="mr-2 h-5 w-5" />
     Clear
   </Button>

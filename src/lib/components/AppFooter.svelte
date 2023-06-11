@@ -8,9 +8,9 @@
   ];
 </script>
 
-<footer class="mt-8 flex items-center justify-between border-t border-primary py-4">
+<footer class="mt-8 flex items-center justify-between border-t py-4">
   <nav class="leading-none">
-    <ul class="flex divide-x divide-primary">
+    <ul class="flex divide-x">
       {#each links as link}
         <li class="px-2 first:pl-0 last:pr-0">
           <a href={link.href} class="link">
