@@ -1,10 +1,10 @@
 <script type="ts">
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
-  import { apiKeyValid, updateValidateApiKey } from '$lib/store';
+  import { apiKeyValid, validateApiKey } from '$lib/store';
 
   onMount(() => {
-    updateValidateApiKey();
+    validateApiKey();
   });
 </script>
 
@@ -19,7 +19,7 @@
 </section>
 
 {#key $apiKeyValid}
-  <section in:fade>
+  <section in:fade|local>
     {#if $apiKeyValid == null}
       <p>Checking API key...</p>
     {:else if $apiKeyValid}

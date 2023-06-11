@@ -6,25 +6,21 @@
   import { Button } from '$components/ui/button';
   import { Input } from '$components/ui/input';
   import { Label } from '$components/ui/label';
-  import { apiKey, apiKeyValid } from '$lib/store';
+  import { apiKey, apiKeyValid, validateApiKey } from '$lib/store';
 
   export let data;
 
-  let formRef: HTMLFormElement;
-
-  let apiKeyStatus: { valid: boolean; message: string } | null = null;
+  let message = '';
 
   const { form, enhance, errors, submitting, delayed } = superForm(data.form, {
     onResult({ result }) {
-      // keep additional response data from form submission
+      // use additional response data from form submission
 
       if (result.type === 'success') {
-        apiKeyStatus = {
-          valid: result.data?.valid ?? false,
-          message: result.data?.message ?? '',
-        };
-
-        $apiKeyValid = apiKeyStatus.valid;
+        message = result.data?.message ?? '';
+        $apiKeyValid = result.data?.valid ?? false;
+      } else {
+        message = '';
       }
     },
     onUpdated({ form }) {
@@ -36,48 +32,45 @@
     },
   });
 
-  // restore API key from local storage
+  // restore API key from local storage (without marking the form as changed/tainted)
   if ($apiKey) {
-    $form.apiKey = $apiKey;
+    form.update(
+      ($form) => {
+        $form.apiKey = $apiKey;
+        return $form;
+      },
+      { taint: false }
+    );
   }
 
-  let statusMessage = '';
+  let displayMessage = '';
 
   $: {
     if ($submitting) {
-      statusMessage = '';
+      displayMessage = '';
     } else if ($errors.apiKey) {
-      statusMessage = $errors.apiKey[0];
-    } else if (apiKeyStatus?.valid) {
-      statusMessage = 'API key is valid';
-    } else if (apiKeyStatus?.message) {
-      statusMessage = apiKeyStatus?.message;
+      displayMessage = $errors.apiKey[0];
+    } else if ($apiKeyValid) {
+      displayMessage = 'API key is valid';
+    } else if (message) {
+      displayMessage = message;
     } else {
-      statusMessage = '';
+      displayMessage = '';
     }
   }
 
   onMount(async () => {
-    if ($form.apiKey) {
-      formRef.requestSubmit();
-    }
+    validateApiKey();
   });
 
   function clearApiKey() {
-    // overwrite local storage
     $apiKey = '';
-
-    // set valid to false
-    apiKeyStatus = {
-      valid: false,
-      message: '',
-    };
-
     $apiKeyValid = false;
+    message = '';
   }
 </script>
 
-<form method="POST" autocomplete="off" use:enhance bind:this={formRef}>
+<form method="POST" autocomplete="off" use:enhance>
   <div class="mb-4 grid w-full max-w-2xl items-center gap-2">
     <Label for="apiKey">API Key</Label>
 
@@ -92,10 +85,10 @@
       autofocus
     />
 
-    {#key statusMessage}
-      <div class={$errors.apiKey || !apiKeyStatus?.valid ? 'text-error' : 'text-success'} in:fade>
-        {#if statusMessage}
-          {statusMessage}
+    {#key displayMessage}
+      <div class={$errors.apiKey || !$apiKeyValid ? 'text-error' : 'text-success'} in:fade|local>
+        {#if displayMessage}
+          {displayMessage}
         {:else}
           &nbsp;
         {/if}
