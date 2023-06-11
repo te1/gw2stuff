@@ -4,6 +4,7 @@
   import { X, Save } from 'lucide-svelte';
   import { Button } from '$components/ui/button';
   import { Input } from '$components/ui/input';
+  import { Label } from '$components/ui/label';
   import { apiKey, apiKeyValid } from '$lib/store';
 
   export let data;
@@ -60,11 +61,31 @@
 </script>
 
 <form method="POST" use:enhance bind:this={formRef}>
-  <Input type="text" name="apiKey" data-invalid={$errors.apiKey} bind:value={$form.apiKey} />
+  <div class="mb-4 grid w-full max-w-xl items-center gap-2">
+    <Label for="apiKey">API Key</Label>
 
-  {#if $errors.apiKey}
-    <span class="invalid">{$errors.apiKey}</span>
-  {/if}
+    <Input
+      type="text"
+      id="apiKey"
+      name="apiKey"
+      data-invalid={$errors.apiKey}
+      bind:value={$form.apiKey}
+      placeholder="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXXXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+      maxlength="72"
+    />
+
+    <span class={$errors.apiKey || !apiKeyStatus?.valid ? 'text-error' : 'text-success'}>
+      {#if $errors.apiKey}
+        {$errors.apiKey}
+      {:else if apiKeyStatus?.valid}
+        API key is valid
+      {:else if apiKeyStatus?.message}
+        {apiKeyStatus?.message}
+      {:else}
+        &nbsp;
+      {/if}
+    </span>
+  </div>
 
   <Button type="reset" variant="secondary" on:click={clearApiKey}>
     <X class="mr-2 h-5 w-5" />
@@ -77,11 +98,7 @@
   </Button>
 </form>
 
-<pre>
-  {JSON.stringify(apiKeyStatus, null, 2)}
-</pre>
-
-<ol class="ml-4 mt-4 list-decimal">
+<ol class="ml-4 mt-8 list-decimal">
   <li>
     Go to the official
     <a href="https://account.arena.net/applications" target="_blank" class="link">
