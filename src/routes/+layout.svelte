@@ -26,6 +26,15 @@
 </script>
 
 <svelte:head>
+  <title>Where Is My Stuff? Find Items On Your Guild Wars 2 Account!</title>
+  <meta
+    name="description"
+    content="Find gear and items anywhere on your Guild Wars 2 account, in your bank, inventory and equipment tabs on all your characters."
+  />
+  <meta
+    name="keywords"
+    content="Guild Wars 2, Find, Item, Gear, Ascended, Account, Equipment, Bank, Inventory, Gathering"
+  />
   {@html `<\u{73}cript nonce="%sveltekit.nonce%">(${setInitialClassState.toString()})();</script>`}
 </svelte:head>
 
