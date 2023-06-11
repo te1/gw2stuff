@@ -4,11 +4,11 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%; /* #ffffff white */
-    --foreground: 222.2 47.4% 11.2%; /* #0f172a slate-900 */
+    --background: 60 5% 96%; /* #f5f5f4 stone-100 */
+    --foreground: 24 10% 10%; /* #1c1917 stone-900 */
 
-    --muted: 210 40% 96.1%; /* #f1f5f9 slate-100 */
-    --muted-foreground: 215.4 16.3% 46.9%; /* #64748b slate-500 */
+    --muted: 24 6% 83%; /* #d6d3d1 stone-300 */
+    --muted-foreground: 25 5% 45%; /* #78716c stone-500 */
 
     --popover: var(--background);
     --popover-foreground: var(--foreground);
@@ -16,23 +16,23 @@
     --card: var(--background);
     --card-foreground: var(--foreground);
 
-    --border: 214.3 31.8% 91.4%; /* #e2e8f0 slate-200 */
+    --border: 24 5% 64%; /* #a8a29e stone-400 */
 
     --input: var(--border);
 
-    --primary: var(--foreground);
-    --primary-foreground: 210 40% 98%; /* #f8fafc slate-50 */
+    --primary: 347 77% 50%; /* #e11d48 rose-600 */
+    --primary-foreground: var(--background);
 
-    --secondary: var(--muted);
-    --secondary-foreground: var(--foreground);
+    --secondary: var(--border);
+    --secondary-foreground: var(--background);
 
     --accent: var(--muted);
     --accent-foreground: var(--foreground);
 
-    --destructive: 0 92% 38%; /* #ba0808 */
+    --destructive: 0 74% 42%; /* #b91c1c red-700 */
     --destructive-foreground: var(--primary-foreground);
 
-    --ring: 215 20.2% 65.1%; /* #94a3b8 slate-400 */
+    --ring: var(--border);
 
     --radius: 0.5rem;
   }
@@ -84,7 +84,6 @@
 
 @layer components {
   .link {
-    color: hsl(var(--destructive));
-    @apply no-underline hover:underline;
+    @apply text-primary no-underline hover:underline;
   }
 }
