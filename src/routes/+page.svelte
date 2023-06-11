@@ -1,5 +1,6 @@
 <script type="ts">
   import { onMount } from 'svelte';
+  import { fade } from 'svelte/transition';
   import { apiKeyValid, updateValidateApiKey } from '$lib/store';
 
   onMount(() => {
@@ -17,12 +18,16 @@
   </p>
 </section>
 
-{#if $apiKeyValid == null}
-  <p>Checking API key...</p>
-{:else if $apiKeyValid}
-  <p>Your API key is valid. You can go find your stuff now.</p>
-{:else}
-  <p>
-    You need to <a href="/settings" class="link">setup an API key</a> before you can use this tool.
-  </p>
-{/if}
+{#key $apiKeyValid}
+  <section in:fade>
+    {#if $apiKeyValid == null}
+      <p>Checking API key...</p>
+    {:else if $apiKeyValid}
+      <p>Your API key is valid. You can go find your stuff now.</p>
+    {:else}
+      <p>
+        You need to <a href="/settings" class="link">setup an API key</a> before you can use this tool.
+      </p>
+    {/if}
+  </section>
+{/key}
