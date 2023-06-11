@@ -81,22 +81,45 @@
   {JSON.stringify(apiKeyStatus, null, 2)}
 </pre>
 
-<ol class="list-decimal">
+<ol class="ml-4 mt-4 list-decimal">
   <li>
-    Open the <a href="https://account.arena.net/applications" target="_blank" class="link">
-      official Guild Wars 2 API Key Management
-    </a>.
+    Go to the official
+    <a href="https://account.arena.net/applications" target="_blank" class="link">
+      Guild Wars 2 API Key Management
+    </a> page. Login if you are not already logged in.
   </li>
-  <li>Click on the "New Key" button.</li>
+
+  <li>Click on "New Key".</li>
+
   <li>
-    Enter a name of your choice and <strong>check all permission checkboxes</strong>.
+    Enter any name (like "stuff") and check the
+    <strong>"inventories" and "characters" permissions</strong>
+    and then click "Create API Key".
   </li>
+
   <li>
-    Copy your new API key. <kbd>CTRL + C</kbd>
+    Copy your new API key with the "Copy" button or using <kbd>CTRL + C</kbd> on your keyboard.
   </li>
+
   <li>
-    Paste it in the form above. <kbd>CTRL + V</kbd>
+    Paste the API key in the form above (<kbd>CTRL + V</kbd>).
   </li>
-  <li>Click the "Save new API key" button.</li>
-  <li>You are set, have fun exploring your account!</li>
+
+  <li>Click "Save" and you are good to go.</li>
 </ol>
+
+<aside class="mt-4">
+  <strong>Note:</strong>
+  <span>
+    Your API key is stored locally on your device. We never store your API key on any server, but we
+    pass it through to the official
+    <a href="https://wiki.guildwars2.com/wiki/API:Main" target="_blank" class="link">
+      Guild Wars 2 API
+    </a>
+    to get information about items and characters on your account. This access is read only, meaning
+    your Guild Wars 2 account, characters and items can't be modified in any way. See
+    <a href="https://wiki.guildwars2.com/wiki/API:API_key" target="_blank" class="link">the Wiki</a>
+    for more information on API keys. We <strong>don't</strong> capture, collect or store any data related
+    to you, your account, characters or items.
+  </span>
+</aside>
