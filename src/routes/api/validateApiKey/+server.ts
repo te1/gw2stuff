@@ -1,8 +1,8 @@
-import { sendRequest } from '$lib/gw2api';
+import { getGw2Api } from '$lib/gw2api';
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request, fetch }) {
-  const res = await sendRequest('v2/tokeninfo', request, fetch);
+  const res = await getGw2Api('v2/tokeninfo', request, fetch);
 
   let valid = false;
   let message = res.message;

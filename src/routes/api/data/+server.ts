@@ -1,8 +1,10 @@
 import { error, json } from '@sveltejs/kit';
-import { sendRequest } from '$lib/gw2api';
+import { makeGw2Api } from '$lib/gw2api';
 
 export async function POST({ request, fetch }) {
-  const characters = await sendRequest('v2/characters', request, fetch);
+  const api = await makeGw2Api(request, fetch);
+
+  const characters = await api.get('v2/characters');
 
   if (!characters.success) {
     throw error(400, characters.message);
