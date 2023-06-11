@@ -9,14 +9,14 @@ export async function validateApiKey() {
   const apiKeyValidValue = get(apiKeyValid);
 
   if (apiKeyValidValue) {
-    // api key is already valid -> don't check again
+    // API key is already valid -> don't check again
     return;
   }
 
   const apiKeyValue = get(apiKey);
 
   if (!apiKeyValue) {
-    // api key is empty -> no need to check with server
+    // API key is empty -> no need to check with server
 
     apiKeyValid.set(false);
 
