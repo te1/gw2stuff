@@ -4,7 +4,7 @@
 </script>
 
 <footer class="mt-8 flex items-center justify-between border-t border-primary py-4">
-  <span>Footer Text Placeholder</span>
+  <span class="text-sm">¯\_(ツ)_/¯</span>
 
   <Button
     href="https://github.com/te1/gw2stuff"
