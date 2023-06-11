@@ -37,9 +37,9 @@
   {@html `<\u{73}cript nonce="%sveltekit.nonce%">(${setInitialClassState.toString()})();</script>`}
 </svelte:head>
 
-<div class="container">
+<div class="container flex min-h-screen flex-col">
   <AppHeader />
-  <main>
+  <main class="flex-1">
     <slot />
   </main>
   <AppFooter />
