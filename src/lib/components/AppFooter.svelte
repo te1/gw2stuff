@@ -4,7 +4,7 @@
 </script>
 
 <footer class="mt-8 flex items-center justify-between border-t border-primary py-4">
-  <span class="text-muted">Footer Text Placeholder</span>
+  <span>Footer Text Placeholder</span>
 
   <Button
     href="https://github.com/te1/gw2stuff"
