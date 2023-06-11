@@ -53,8 +53,8 @@ const config = {
           foreground: 'hsl(var(--card-foreground))',
         },
         // other
-        success: '#16a34a', // green-600
-        error: 'hsl(var(--destructive))',
+        success: 'hsl(var(--success))',
+        error: 'hsl(var(--error))',
         // item rarity
         junk: '#aaaaaa',
         basic: '#000000',
