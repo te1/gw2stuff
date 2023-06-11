@@ -18,6 +18,7 @@ const config = {
 
     extend: {
       colors: {
+        // shadcn-svelte
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
@@ -51,6 +52,10 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        // other
+        success: '#16a34a', // green-600
+        error: 'hsl(var(--destructive))',
+        // item rarity
         junk: '#aaaaaa',
         basic: '#000000',
         fine: '#62a4da',
