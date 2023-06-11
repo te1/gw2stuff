@@ -13,7 +13,8 @@
     size="sm"
     class="w-9 px-0"
     title="Source Code On GitHub"
-    ><Icons.gitHub class="h-5 w-5" />
-    <span class="sr-only">Source Code On GitHub</span></Button
   >
+    <Icons.gitHub class="h-5 w-5" />
+    <span class="sr-only">Source Code On GitHub</span>
+  </Button>
 </footer>

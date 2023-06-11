@@ -66,8 +66,15 @@
     <span class="invalid">{$errors.apiKey}</span>
   {/if}
 
-  <Button type="reset" on:click={clearApiKey}><X class="mr-2 h-5 w-5" />Clear</Button>
-  <Button type="submit"><Save class="mr-2 h-5 w-5" />Save</Button>
+  <Button type="reset" on:click={clearApiKey}>
+    <X class="mr-2 h-5 w-5" />
+    Clear
+  </Button>
+
+  <Button type="submit">
+    <Save class="mr-2 h-5 w-5" />
+    Save
+  </Button>
 </form>
 
 <pre>
@@ -76,12 +83,14 @@
 
 <ol class="list-decimal">
   <li>
-    Open the <a href="https://account.arena.net/applications" target="_blank" class="link"
-      >official Guild Wars 2 API Key Management</a
-    >.
+    Open the <a href="https://account.arena.net/applications" target="_blank" class="link">
+      official Guild Wars 2 API Key Management
+    </a>.
   </li>
   <li>Click on the "New Key" button.</li>
-  <li>Enter a name of your choice and <strong>check all permission checkboxes</strong>.</li>
+  <li>
+    Enter a name of your choice and <strong>check all permission checkboxes</strong>.
+  </li>
   <li>
     Copy your new API key. <kbd>CTRL + C</kbd>
   </li>

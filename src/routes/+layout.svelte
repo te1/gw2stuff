@@ -1,13 +1,12 @@
 <script>
+  import { inject } from '@vercel/analytics';
   import { browser, dev } from '$app/environment';
   import { page } from '$app/stores';
-  import { inject } from '@vercel/analytics';
   import { webVitals } from '$lib/webVitals';
   import { setInitialClassState } from '$components/lightSwitch';
-
-  import '../app.postcss';
   import AppHeader from '$components/AppHeader.svelte';
   import AppFooter from '$components/AppFooter.svelte';
+  import '../app.postcss';
 
   const analyticsId = import.meta.env.VERCEL_ANALYTICS_ID;
 
@@ -40,6 +39,8 @@
 
 <div class="container">
   <AppHeader />
-  <slot />
+  <main>
+    <slot />
+  </main>
   <AppFooter />
 </div>
