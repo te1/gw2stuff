@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { fade } from 'svelte/transition';
   import { superForm } from 'sveltekit-superforms/client';
   import { Loader2, Save, X } from 'lucide-svelte';
   import { Button } from '$components/ui/button';
@@ -40,6 +41,22 @@
     $form.apiKey = $apiKey;
   }
 
+  let statusMessage = '';
+
+  $: {
+    if ($submitting) {
+      statusMessage = '';
+    } else if ($errors.apiKey) {
+      statusMessage = $errors.apiKey[0];
+    } else if (apiKeyStatus?.valid) {
+      statusMessage = 'API key is valid';
+    } else if (apiKeyStatus?.message) {
+      statusMessage = apiKeyStatus?.message;
+    } else {
+      statusMessage = '';
+    }
+  }
+
   onMount(async () => {
     if ($form.apiKey) {
       formRef.requestSubmit();
@@ -61,7 +78,7 @@
 </script>
 
 <form method="POST" autocomplete="off" use:enhance bind:this={formRef}>
-  <div class="mb-4 grid w-full max-w-xl items-center gap-2">
+  <div class="mb-4 grid w-full max-w-2xl items-center gap-2">
     <Label for="apiKey">API Key</Label>
 
     <Input
@@ -72,25 +89,22 @@
       bind:value={$form.apiKey}
       placeholder="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXXXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
       maxlength="72"
+      autofocus
     />
 
-    <span class={$errors.apiKey || !apiKeyStatus?.valid ? 'text-error' : 'text-success'}>
-      {#if $submitting}
-        &nbsp;
-      {:else if $errors.apiKey}
-        {$errors.apiKey}
-      {:else if apiKeyStatus?.valid}
-        API key is valid
-      {:else if apiKeyStatus?.message}
-        {apiKeyStatus?.message}
-      {:else}
-        &nbsp;
-      {/if}
-    </span>
+    {#key statusMessage}
+      <div class={$errors.apiKey || !apiKeyStatus?.valid ? 'text-error' : 'text-success'} in:fade>
+        {#if statusMessage}
+          {statusMessage}
+        {:else}
+          &nbsp;
+        {/if}
+      </div>
+    {/key}
   </div>
 
   <div class="space-x-1">
-    <Button type="submit" size="sm" disabled={$submitting}>
+    <Button type="submit" size="sm" disabled={$delayed}>
       {#if $delayed}
         <Loader2 class="mr-2 h-5 w-5 animate-spin" />
       {:else}
