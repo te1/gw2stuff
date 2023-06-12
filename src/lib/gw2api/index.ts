@@ -6,6 +6,7 @@ import type {
   AccountBankSlot,
   AccountInventory,
   AccountInventorySlot,
+  AccountMaterial,
   CharacterCore,
   CharacterEquipmentTab,
   CharacterEquipmentTabs,
@@ -80,10 +81,11 @@ export class Gw2Api {
   }
 
   async collectAccount() {
-    const [account, inventory, bank] = await Promise.all([
+    const [account, inventory, bank, materials] = await Promise.all([
       this.get<Account>('v2/account/'),
       this.get<AccountInventory>('v2/account/inventory'),
       this.get<AccountBank>('v2/account/bank'),
+      this.get<AccountMaterial[]>('v2/account/materials'),
     ]);
 
     if (!account.success) {
@@ -98,10 +100,15 @@ export class Gw2Api {
       throw error(400, 'collectAccount: bank, ' + bank.message);
     }
 
+    if (!materials.success) {
+      throw error(400, 'collectAccount: materials, ' + materials.message);
+    }
+
     return {
       name: account.data.name,
       inventory: this.filterSlots<AccountInventorySlot>(inventory.data),
       bank: this.filterSlots<AccountBankSlot>(bank.data),
+      materials: this.filterMaterials(materials.data),
     };
   }
 
@@ -150,7 +157,11 @@ export class Gw2Api {
   }
 
   async collectItems(
-    account: { inventory: AccountInventorySlot[]; bank: AccountBankSlot[] },
+    account: {
+      inventory: AccountInventorySlot[];
+      bank: AccountBankSlot[];
+      materials: AccountMaterial[];
+    },
     characters: { inventory: CharacterInventorySlot[]; equipmenttabs: CharacterEquipmentTab[] }[]
   ) {
     const ids = this.collectItemIds(account, characters);
@@ -181,7 +192,11 @@ export class Gw2Api {
   }
 
   collectItemIds(
-    account: { inventory: AccountInventorySlot[]; bank: AccountBankSlot[] },
+    account: {
+      inventory: AccountInventorySlot[];
+      bank: AccountBankSlot[];
+      materials: AccountMaterial[];
+    },
     characters: { inventory: CharacterInventorySlot[]; equipmenttabs: CharacterEquipmentTab[] }[]
   ) {
     const ids = new Set<number>();
@@ -191,6 +206,10 @@ export class Gw2Api {
     }
 
     for (const item of account.bank) {
+      ids.add(item.id);
+    }
+
+    for (const item of account.materials) {
       ids.add(item.id);
     }
 
@@ -214,6 +233,12 @@ export class Gw2Api {
 
     return slots.filter((slot): slot is T => {
       return slot != null;
+    });
+  }
+
+  filterMaterials(materials: AccountMaterial[]) {
+    return materials.filter((material) => {
+      return material.count > 0;
     });
   }
 

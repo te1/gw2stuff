@@ -57,6 +57,14 @@ export interface AccountBankSlot extends Slot {
   stats?: ItemStats; // The stats of the item.
 }
 
+// https://wiki.guildwars2.com/wiki/API:2/account/materials
+export interface AccountMaterial {
+  id: number; // The item ID of the material.
+  category: number; // The material category the item belongs to. Can be resolved against /v2/materials.
+  binding?: 'Account'; // The binding of the material. Either Account or omitted.
+  count: number; // The number of the material that is stored in the account vault.
+}
+
 // https://wiki.guildwars2.com/wiki/API:2/characters/:id/core
 export interface CharacterCore {
   name: string; // The character's name.
