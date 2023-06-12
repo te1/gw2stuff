@@ -6,6 +6,7 @@ import type {
   AccountBankSlot,
   AccountInventory,
   AccountInventorySlot,
+  CharacterCore,
   CharacterEquipmentTab,
   CharacterEquipmentTabs,
   CharacterInventoryBag,
@@ -122,10 +123,15 @@ export class Gw2Api {
   }
 
   async collectCharacter(characterName: string) {
-    const [inventory, equipmenttabs] = await Promise.all([
+    const [core, inventory, equipmenttabs] = await Promise.all([
+      this.get<CharacterCore>(`v2/characters/${characterName}/core`),
       this.get<CharacterInventoryBags>(`v2/characters/${characterName}/inventory`),
       this.get<CharacterEquipmentTabs>(`v2/characters/${characterName}/equipmenttabs?tabs=all`),
     ]);
+
+    if (!core.success) {
+      throw error(400, 'collectCharacter: core, ' + core.message);
+    }
 
     if (!inventory.success) {
       throw error(400, 'collectCharacter: inventory, ' + inventory.message);
@@ -137,6 +143,7 @@ export class Gw2Api {
 
     return {
       name: characterName,
+      core: core.data,
       inventory: this.flattenBags(inventory.data.bags),
       equipmenttabs: this.filterEquipment(equipmenttabs.data),
     };

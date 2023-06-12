@@ -57,6 +57,37 @@ export interface AccountBankSlot extends Slot {
   stats?: ItemStats; // The stats of the item.
 }
 
+// https://wiki.guildwars2.com/wiki/API:2/characters/:id/core
+export interface CharacterCore {
+  name: string; // The character's name.
+
+  // The character's race. Possible values:
+  race: 'Asura' | 'Charr' | 'Human' | 'Norn' | 'Sylvari';
+
+  // The character's gender. Possible values:
+  gender: 'Male' | 'Female';
+
+  // The character's profession. Possible values:
+  profession:
+    | 'Elementalist'
+    | 'Engineer'
+    | 'Guardian'
+    | 'Mesmer'
+    | 'Necromancer'
+    | 'Ranger'
+    | 'Revenant'
+    | 'Thief'
+    | 'Warrior';
+
+  level: number; // The character's level.
+  guild?: string; // The guild ID of the character's currently represented guild.
+  age: number; // The amount of seconds this character was played.
+  last_modified: string; // An ISO-8601 standard timestamp of when the account information last changed as perceived by the API. This field is only present when a Schema version of 2019-02-21T00:00:00Z or later is requested.
+  created: string; // ISO 8601 representation of the character's creation time.
+  deaths: number; // The amount of times this character has been defeated.
+  title?: number; // The currently selected title for the character. References /v2/titles.
+}
+
 // https://wiki.guildwars2.com/wiki/API:2/characters/:id/inventory
 export interface CharacterInventoryBags {
   bags: CharacterInventoryBag[]; // Contains one object structure per bag in the character's inventory
