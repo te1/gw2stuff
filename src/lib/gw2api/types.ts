@@ -282,3 +282,28 @@ export interface ItemStats {
     Vitality?: number; // Vitality
   };
 }
+
+// https://wiki.guildwars2.com/wiki/API:2/itemstats
+export interface Itemstat {
+  id: number; // The itemstat id.
+  name: string; // The name of the set of stats.
+
+  // List of attribute bonuses. Each object may contain the following
+  attributes: {
+    // The name of the attribute, may be one of the following
+    attribute:
+      | 'AgonyResistance' // Agony Resistance
+      | 'BoonDuration' // Concentration
+      | 'ConditionDamage' // Condition Damage
+      | 'ConditionDuration' // Expertise
+      | 'CritDamage' // Ferocity
+      | 'Healing' // Healing Power
+      | 'Power' // Power
+      | 'Precision' // Precision
+      | 'Toughness' // Toughness
+      | 'Vitality'; // Vitality
+
+    multiplier: number; // The multiplier number for that attribute.
+    value: number; // The value number for that attribute.
+  }[];
+}

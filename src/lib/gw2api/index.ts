@@ -14,6 +14,7 @@ import type {
   CharacterInventoryBags,
   CharacterInventorySlot,
   Item,
+  Itemstat,
   Slot,
   Slots,
 } from './types';
@@ -40,7 +41,7 @@ export class Gw2Api {
 
     const data = await res.json();
 
-    if (res.status === 200) {
+    if (res.ok) {
       success = true;
     } else if (res.status === 401 || res.status === 400) {
       // 401 is returned if the API key is not present or in the wrong format
@@ -73,10 +74,13 @@ export class Gw2Api {
 
     const items = await this.collectItems(account, characters);
 
+    const itemstats = await this.collectItemstats(items, account, characters);
+
     return {
       account,
       characters,
       items,
+      itemstats,
     };
   }
 
@@ -221,6 +225,84 @@ export class Gw2Api {
       for (const tab of character.equipmenttabs) {
         for (const item of tab.equipment) {
           ids.add(item.id);
+        }
+      }
+    }
+
+    return Array.from(ids);
+  }
+
+  async collectItemstats(
+    items: Item[],
+    account: {
+      inventory: AccountInventorySlot[];
+      bank: AccountBankSlot[];
+      materials: AccountMaterial[];
+    },
+    characters: { inventory: CharacterInventorySlot[]; equipmenttabs: CharacterEquipmentTab[] }[]
+  ) {
+    const ids = this.collectItemstatsIds(items, account, characters);
+
+    if (!ids.length) {
+      return [];
+    }
+
+    const limit = pLimit(10);
+    const tasks = [];
+    const chunks = chunked(ids, 200); // api only supports 200 itemstatss at a time
+
+    for (const chunk of chunks) {
+      tasks.push(limit(() => this.get<Itemstat[]>('v2/itemstats?ids=' + chunk.join(','), true)));
+    }
+
+    const results = await Promise.all(tasks);
+
+    for (const result of results) {
+      if (!result.success) {
+        throw error(400, 'collectItemstats: result, ' + result.message);
+      }
+    }
+
+    return results.flatMap((result) => {
+      return result.data;
+    });
+  }
+
+  collectItemstatsIds(
+    items: Item[],
+    account: {
+      inventory: AccountInventorySlot[];
+      bank: AccountBankSlot[];
+      materials: AccountMaterial[];
+    },
+    characters: { inventory: CharacterInventorySlot[]; equipmenttabs: CharacterEquipmentTab[] }[]
+  ) {
+    const ids = new Set<number>();
+
+    for (const item of items) {
+      if (item.details?.infix_upgrade?.id) {
+        ids.add(item.details?.infix_upgrade?.id);
+      }
+    }
+
+    for (const item of account.bank) {
+      if (item.stats?.id) {
+        ids.add(item.stats?.id);
+      }
+    }
+
+    for (const character of characters) {
+      for (const item of character.inventory) {
+        if (item.stats?.id) {
+          ids.add(item.stats?.id);
+        }
+      }
+
+      for (const tab of character.equipmenttabs) {
+        for (const item of tab.equipment) {
+          if (item.stats?.id) {
+            ids.add(item.stats?.id);
+          }
         }
       }
     }
