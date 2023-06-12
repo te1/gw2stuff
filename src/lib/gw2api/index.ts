@@ -280,8 +280,8 @@ export class Gw2Api {
     const ids = new Set<number>();
 
     for (const item of items) {
-      if (item.details?.infix_upgrade?.id) {
-        ids.add(item.details?.infix_upgrade?.id);
+      if (item.details && 'infix_upgrade' in item.details && item.details.infix_upgrade?.id) {
+        ids.add(item.details.infix_upgrade.id);
       }
     }
 

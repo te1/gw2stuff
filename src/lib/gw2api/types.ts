@@ -165,7 +165,7 @@ export interface CharacterEquipmentSlot extends Slot {
 }
 
 // https://wiki.guildwars2.com/wiki/API:2/items
-export interface Item {
+export interface ItemBase {
   id: number; // The item id.
   chat_link: string; // The chat link.
   name: string; // The item name.
@@ -255,7 +255,7 @@ export interface Item {
   // Lists what items this item can be upgraded from, and the method of upgrading. See upgrades_into for format.
   upgrades_from?: ItemUpgrade[];
 
-  details?: object; // Additional item details if applicable, depending on the item type (see below).
+  details?: ItemDetails; // Additional item details if applicable, depending on the item type (see below).
 }
 
 export interface ItemUpgrade {
@@ -263,6 +263,279 @@ export interface ItemUpgrade {
   upgrade: 'Attunement' | 'Infusion';
 
   item_id: number; // The item ID that results from performing the upgrade.
+}
+
+export type ItemDetails =
+  | ItemDetailsArmor
+  | ItemDetailsBack
+  | ItemDetailsBag
+  | ItemDetailsConsumable
+  | ItemDetailsContainer
+  | ItemDetailsGathering
+  | ItemDetailsGizmo
+  | ItemDetailsMiniature
+  | ItemDetailsSalvageKit
+  | ItemDetailsTrinket
+  | ItemDetailsUpgradeComponent
+  | ItemDetailsWeapon;
+
+export type Item =
+  | ItemArmor
+  | ItemBack
+  | ItemBag
+  | ItemConsumable
+  | ItemContainer
+  | ItemCraftingMaterial
+  | ItemGathering
+  | ItemGizmo
+  | ItemJadeTechModule
+  | ItemKey
+  | ItemMiniature
+  | ItemPowerCore
+  | ItemSalvageKit
+  | ItemTrait
+  | ItemTrinket
+  | ItemTrophy
+  | ItemUpgradeComponent
+  | ItemWeapon;
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Armor
+export interface ItemArmor extends ItemBase {
+  type: 'Armor';
+
+  details?: ItemDetailsArmor;
+}
+
+export interface ItemDetailsArmor {
+  // The armor slot type.
+  type:
+    | 'Boots' // Feet slot
+    | 'Coat' // Chest slot
+    | 'Gloves' // Hands slot
+    | 'Helm' // Helm slot
+    | 'HelmAquatic' // Breathing apparatus slot
+    | 'Leggings' // Legs slot
+    | 'Shoulders'; // Shoulders slot
+
+  // The weight class of the armor piece.
+  weight_class:
+    | 'Heavy' // Heavy armor
+    | 'Medium' // Medium armor
+    | 'Light' // Light armor
+    | 'Clothing'; // Town clothing
+
+  defense: number; // The defense value of the armor piece.
+  infusion_slots: ItemInfusionSlot[]; // Infusion slots of the armor piece (see below).
+  attribute_adjustment: number; // The (x) value to be combined with the (m, gradient) multiplier and (c, offset) value to calculate the value of an attribute using API:2/itemstats.
+  infix_upgrade?: ItemInfixUpgrade; // The infix upgrade object (see below).
+  suffix_item_id?: number; // The suffix item id. This is usually a rune.
+  secondary_suffix_item_id: string; // The secondary suffix item id. Equals to an empty string if there is no secondary suffix item.
+  stat_choices?: number[]; // A list of selectable stat IDs which are visible in API:2/itemstats
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Back_item
+export interface ItemBack extends ItemBase {
+  type: 'Back';
+
+  details?: ItemDetailsBack;
+}
+
+export interface ItemDetailsBack {
+  infusion_slots: ItemInfusionSlot[]; // Infusion slots of the armor piece (see below).
+  attribute_adjustment: number; // The (x) value to be combined with the (m, gradient) multiplier and (c, offset) value to calculate the value of an attribute using API:2/itemstats.
+  infix_upgrade?: ItemInfixUpgrade; // The infix upgrade object (see below).
+  suffix_item_id?: number; // The suffix item id. This is usually a rune.
+  secondary_suffix_item_id: string; // The secondary suffix item id. Equals to an empty string if there is no secondary suffix item.
+  stat_choices?: number[]; // A list of selectable stat IDs which are visible in API:2/itemstats
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Bag
+export interface ItemBag extends ItemBase {
+  type: 'Bag';
+
+  details?: ItemDetailsBag;
+}
+
+export interface ItemDetailsBag {
+  size: number; // The number of bag slots.
+  no_sell_or_sort: boolean; // Whether the bag is invisible/safe, and contained items won't show up at merchants etc.
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Consumable
+export interface ItemConsumable extends ItemBase {
+  type: 'Consumable';
+
+  details?: ItemDetailsConsumable;
+}
+
+export interface ItemDetailsConsumable {
+  // TODO
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Container
+export interface ItemContainer extends ItemBase {
+  type: 'Container';
+
+  details?: ItemDetailsContainer;
+}
+
+export interface ItemDetailsContainer {
+  // The container type. Possible values:
+  type:
+    | 'Default'
+    | 'GiftBox' // For some presents and most dye kits
+    | 'Immediate' // For containers without a UI (e.g. Pile of Silky Sand, Black Lion Arsenal—Axe, Divine Passage, Iboga Petals)
+    | 'OpenUI'; // For containers that have their own UI when opening (Black Lion Chest)
+}
+
+export interface ItemCraftingMaterial extends ItemBase {
+  type: 'CraftingMaterial';
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Gathering
+export interface ItemGathering extends ItemBase {
+  type: 'Gathering';
+
+  details?: ItemDetailsGathering;
+}
+
+// For gathering tools, baits and lures the details object contains the following property:
+export interface ItemDetailsGathering {
+  // The type. Possible values:
+  type:
+    | 'Foraging' // For harvesting sickles
+    | 'Logging' // For logging axes
+    | 'Mining' // For mining picks
+    | 'Bait' // For baits
+    | 'Lure'; // For lures
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Gizmo
+export interface ItemGizmo extends ItemBase {
+  type: 'Gizmo';
+
+  details?: ItemDetailsGizmo;
+}
+
+// For gizmo items, the details object contains the following properties:
+export interface ItemDetailsGizmo {
+  // TODO
+}
+
+export interface ItemJadeTechModule extends ItemBase {
+  type: 'JadeTechModule';
+}
+
+export interface ItemKey extends ItemBase {
+  type: 'Key';
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Miniature
+export interface ItemMiniature extends ItemBase {
+  type: 'MiniPet';
+
+  details?: ItemDetailsMiniature;
+}
+
+// For miniatures (MiniPets), the details object contains the following property:
+export interface ItemDetailsMiniature {
+  // TODO
+}
+
+export interface ItemPowerCore extends ItemBase {
+  type: 'PowerCore';
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Salvage_kits
+export interface ItemSalvageKit extends ItemBase {
+  type: 'Tool';
+
+  details?: ItemDetailsSalvageKit;
+}
+
+// For salvage kits (tools), the details object contains the following properties:
+export interface ItemDetailsSalvageKit {
+  // TODO
+}
+
+export interface ItemTrait extends ItemBase {
+  type: 'Trait';
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Trinket
+export interface ItemTrinket extends ItemBase {
+  type: 'Trinket';
+
+  details?: ItemDetailsTrinket;
+}
+
+export interface ItemDetailsTrinket {
+  // TODO
+}
+
+export interface ItemTrophy extends ItemBase {
+  type: 'Trophy';
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Upgrade_component
+export interface ItemUpgradeComponent extends ItemBase {
+  type: 'UpgradeComponent';
+
+  details?: ItemDetailsUpgradeComponent;
+}
+
+export interface ItemDetailsUpgradeComponent {
+  // TODO
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Weapon
+export interface ItemWeapon extends ItemBase {
+  type: 'Weapon';
+
+  details?: ItemDetailsWeapon;
+}
+
+export interface ItemDetailsWeapon {
+  // TODO
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Infix_upgrade_subobject
+export interface ItemInfixUpgrade {
+  id: number; // The itemstat id that can be resolved against /v2/itemstats. The usual whitelist restrictions apply and not all itemstats may be visible.
+
+  // List of attribute bonuses. Each object contains the following properties:
+  attributes: {
+    // Attribute this bonus applies to. Possible values:
+    attribute:
+      | 'AgonyResistance' // Agony Resistance
+      | 'BoonDuration' // Concentration
+      | 'ConditionDamage' // Condition Damage
+      | 'ConditionDuration' // Expertise
+      | 'CritDamage' // Ferocity
+      | 'Healing' // Healing Power
+      | 'Power' // Power
+      | 'Precision' // Precision
+      | 'Toughness' // Toughness
+      | 'Vitality'; // Vitality
+
+    modifier: number; // The modifier value.
+  }[];
+
+  // Object containing an additional effect. This is used for Boon Duration, Condition Duration, or additional attribute bonuses for ascended trinkets or back items. It has the following properties:
+  buff?: {
+    skill_id: number; // The skill id of the effect.
+    description?: string; // The effect's description.
+  };
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/items#Infusion_slots_subobject
+export interface ItemInfusionSlot {
+  // Infusion slot type of infusion upgrades. The array contains a maximum of one value. Possible values:
+  flags:
+    | 'Enrichment' // Item has an enrichment slot.
+    | 'Infusion'; // Item has an infusion slot.
+
+  item_id?: number; // The infusion upgrade already in the armor piece. Only used for +5 Agony Infusions (id 49428).
 }
 
 export interface ItemStats {
