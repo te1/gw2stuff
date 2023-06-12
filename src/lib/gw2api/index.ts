@@ -1,12 +1,27 @@
 import { error } from '@sveltejs/kit';
 import pLimit from 'p-limit';
+import type {
+  Account,
+  AccountBank,
+  AccountBankSlot,
+  AccountInventory,
+  AccountInventorySlot,
+  CharacterEquipmentTab,
+  CharacterEquipmentTabs,
+  CharacterInventoryBag,
+  CharacterInventoryBags,
+  CharacterInventorySlot,
+  Item,
+  Slot,
+  Slots,
+} from './types';
 
 type Fetch = typeof fetch;
 
 export class Gw2Api {
   constructor(private apiKey: string, private fetch: Fetch) {}
 
-  async get(endpoint: string, anonymous = false) {
+  async get<T>(endpoint: string, anonymous = false) {
     const url = `https://api.guildwars2.com/${endpoint}`;
 
     const opts: RequestInit = {};
@@ -43,7 +58,7 @@ export class Gw2Api {
 
     return {
       success,
-      data,
+      data: data as T,
       message,
     };
   }
@@ -65,9 +80,9 @@ export class Gw2Api {
 
   async collectAccount() {
     const [account, inventory, bank] = await Promise.all([
-      this.get('v2/account/'),
-      this.get('v2/account/inventory'),
-      this.get('v2/account/bank'),
+      this.get<Account>('v2/account/'),
+      this.get<AccountInventory>('v2/account/inventory'),
+      this.get<AccountBank>('v2/account/bank'),
     ]);
 
     if (!account.success) {
@@ -83,14 +98,14 @@ export class Gw2Api {
     }
 
     return {
-      name: account.data?.name as string,
-      inventory: this.filterItems(inventory.data),
-      bank: this.filterItems(bank.data),
+      name: account.data.name,
+      inventory: this.filterSlots<AccountInventorySlot>(inventory.data),
+      bank: this.filterSlots<AccountBankSlot>(bank.data),
     };
   }
 
   async collectCharacters() {
-    const characters = await this.get('v2/characters');
+    const characters = await this.get<string[]>('v2/characters');
 
     if (!characters.success) {
       throw error(400, 'collectCharacters: characters, ' + characters.message);
@@ -108,8 +123,8 @@ export class Gw2Api {
 
   async collectCharacter(characterName: string) {
     const [inventory, equipmenttabs] = await Promise.all([
-      this.get(`v2/characters/${characterName}/inventory`),
-      this.get(`v2/characters/${characterName}/equipmenttabs?tabs=all`),
+      this.get<CharacterInventoryBags>(`v2/characters/${characterName}/inventory`),
+      this.get<CharacterEquipmentTabs>(`v2/characters/${characterName}/equipmenttabs?tabs=all`),
     ]);
 
     if (!inventory.success) {
@@ -123,13 +138,13 @@ export class Gw2Api {
     return {
       name: characterName,
       inventory: this.flattenBags(inventory.data.bags),
-      equipment: this.filterEquipment(equipmenttabs.data),
+      equipmenttabs: this.filterEquipment(equipmenttabs.data),
     };
   }
 
   async collectItems(
-    account: { inventory: { id: number }[]; bank: { id: number }[] },
-    characters: { inventory: { id: number }[]; equipment: { equipment: { id: number }[] }[] }[]
+    account: { inventory: AccountInventorySlot[]; bank: AccountBankSlot[] },
+    characters: { inventory: CharacterInventorySlot[]; equipmenttabs: CharacterEquipmentTab[] }[]
   ) {
     const ids = this.collectItemIds(account, characters);
 
@@ -142,7 +157,7 @@ export class Gw2Api {
     const chunks = chunked(ids, 200); // api only supports 200 items at a time
 
     for (const chunk of chunks) {
-      tasks.push(limit(() => this.get('v2/items?ids=' + chunk.join(','), true)));
+      tasks.push(limit(() => this.get<Item[]>('v2/items?ids=' + chunk.join(','), true)));
     }
 
     const results = await Promise.all(tasks);
@@ -159,8 +174,8 @@ export class Gw2Api {
   }
 
   collectItemIds(
-    account: { inventory: { id: number }[]; bank: { id: number }[] },
-    characters: { inventory: { id: number }[]; equipment: { equipment: { id: number }[] }[] }[]
+    account: { inventory: AccountInventorySlot[]; bank: AccountBankSlot[] },
+    characters: { inventory: CharacterInventorySlot[]; equipmenttabs: CharacterEquipmentTab[] }[]
   ) {
     const ids = new Set<number>();
 
@@ -177,7 +192,7 @@ export class Gw2Api {
         ids.add(item.id);
       }
 
-      for (const tab of character.equipment) {
+      for (const tab of character.equipmenttabs) {
         for (const item of tab.equipment) {
           ids.add(item.id);
         }
@@ -187,23 +202,30 @@ export class Gw2Api {
     return Array.from(ids);
   }
 
-  filterItems(items: object[]) {
-    return items.filter((item) => {
-      return item != null;
+  filterSlots<T extends Slot>(slots: Slots) {
+    // filter out empty slots
+
+    return slots.filter((slot): slot is T => {
+      return slot != null;
     });
   }
 
-  flattenBags(bags: { inventory: object[] }[]) {
+  flattenBags(bags: CharacterInventoryBag[]) {
+    // flatten items of all bags into one list
+    // filter out empty slot
+
     return bags
       .flatMap((bag) => {
         return bag.inventory;
       })
-      .filter((item) => {
+      .filter((item): item is CharacterInventorySlot => {
         return item != null;
       });
   }
 
-  filterEquipment(equipmentTabs: { equipment: object[] }[]) {
+  filterEquipment(equipmentTabs: CharacterEquipmentTabs) {
+    // filter out empty equipment tabs
+
     return equipmentTabs.filter((tab) => {
       return tab.equipment.length;
     });
