@@ -13,21 +13,21 @@ import type {
   Itemstat,
 } from './types';
 
-interface Data {
+export interface Data {
   account: AccountData;
   characters: CharacterData[];
   items: Item[];
   itemstats: Itemstat[];
 }
 
-interface AccountData {
+export interface AccountData {
   account: Account;
   inventory: AccountInventory;
   bank: AccountBank;
   materials: AccountMaterial[];
 }
 
-interface CharacterData {
+export interface CharacterData {
   core: CharacterCore;
   inventory: CharacterInventoryBags;
   equipmenttabs: CharacterEquipmenttab[];
