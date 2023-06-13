@@ -17,7 +17,7 @@ import type {
   Itemstat,
   Slot,
   Slots,
-} from './types';
+} from '../gw2api.types';
 
 type Fetch = typeof fetch;
 
@@ -153,7 +153,6 @@ export class Gw2Api {
     }
 
     return {
-      name: characterName,
       core: core.data,
       inventory: this.flattenBags(inventory.data.bags),
       equipmenttabs: this.filterEquipment(equipmenttabs.data),
