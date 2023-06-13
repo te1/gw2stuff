@@ -1,23 +1,42 @@
 import { error } from '@sveltejs/kit';
 import pLimit from 'p-limit';
-import type {
-  AccountBankSlot,
-  AccountInventorySlot,
-  AccountMaterial,
-  CharacterEquipmenttab,
-  CharacterEquipmenttabs,
-  CharacterInventoryBag,
-  CharacterInventorySlot,
-  Item,
-  Slot,
-  Slots,
-} from './types';
 import type { Gw2Api } from './api.server';
+import type {
+  Account,
+  AccountBank,
+  AccountInventory,
+  AccountMaterial,
+  CharacterCore,
+  CharacterEquipmenttab,
+  CharacterInventoryBags,
+  Item,
+  Itemstat,
+} from './types';
+
+interface Data {
+  account: AccountData;
+  characters: CharacterData[];
+  items: Item[];
+  itemstats: Itemstat[];
+}
+
+interface AccountData {
+  account: Account;
+  inventory: AccountInventory;
+  bank: AccountBank;
+  materials: AccountMaterial[];
+}
+
+interface CharacterData {
+  core: CharacterCore;
+  inventory: CharacterInventoryBags;
+  equipmenttabs: CharacterEquipmenttab[];
+}
 
 export class Gw2DataCollector {
   constructor(private api: Gw2Api) {}
 
-  async collect() {
+  async collect(): Promise<Data> {
     const [account, characters] = await Promise.all([
       this.collectAccount(),
       this.collectCharacters(),
@@ -35,7 +54,7 @@ export class Gw2DataCollector {
     };
   }
 
-  async collectAccount() {
+  async collectAccount(): Promise<AccountData> {
     const [account, inventory, bank, materials] = await Promise.all([
       this.api.account(),
       this.api.accountInventory(),
@@ -60,14 +79,14 @@ export class Gw2DataCollector {
     }
 
     return {
-      name: account.data.name,
-      inventory: this.filterSlots<AccountInventorySlot>(inventory.data),
-      bank: this.filterSlots<AccountBankSlot>(bank.data),
-      materials: this.filterMaterials(materials.data),
+      account: account.data,
+      inventory: inventory.data,
+      bank: bank.data,
+      materials: materials.data,
     };
   }
 
-  async collectCharacters() {
+  async collectCharacters(): Promise<CharacterData[]> {
     const characters = await this.api.characterNames();
 
     if (!characters.success) {
@@ -84,7 +103,7 @@ export class Gw2DataCollector {
     return Promise.all(tasks);
   }
 
-  async collectCharacter(characterName: string) {
+  async collectCharacter(characterName: string): Promise<CharacterData> {
     const [core, inventory, equipmenttabs] = await Promise.all([
       this.api.characterCore(characterName),
       this.api.characterInventory(characterName),
@@ -105,19 +124,12 @@ export class Gw2DataCollector {
 
     return {
       core: core.data,
-      inventory: this.flattenBags(inventory.data.bags),
-      equipmenttabs: this.filterEquipment(equipmenttabs.data),
+      inventory: inventory.data,
+      equipmenttabs: equipmenttabs.data,
     };
   }
 
-  async collectItems(
-    account: {
-      inventory: AccountInventorySlot[];
-      bank: AccountBankSlot[];
-      materials: AccountMaterial[];
-    },
-    characters: { inventory: CharacterInventorySlot[]; equipmenttabs: CharacterEquipmenttab[] }[]
-  ) {
+  async collectItems(account: AccountData, characters: CharacterData[]): Promise<Item[]> {
     const ids = this.collectItemIds(account, characters);
 
     if (!ids.length) {
@@ -145,36 +157,41 @@ export class Gw2DataCollector {
     });
   }
 
-  private collectItemIds(
-    account: {
-      inventory: AccountInventorySlot[];
-      bank: AccountBankSlot[];
-      materials: AccountMaterial[];
-    },
-    characters: { inventory: CharacterInventorySlot[]; equipmenttabs: CharacterEquipmenttab[] }[]
-  ) {
+  private collectItemIds(account: AccountData, characters: CharacterData[]) {
     const ids = new Set<number>();
 
     for (const item of account.inventory) {
-      ids.add(item.id);
+      if (item && item.count > 0) {
+        ids.add(item.id);
+      }
     }
 
     for (const item of account.bank) {
-      ids.add(item.id);
+      if (item && item.count > 0) {
+        ids.add(item.id);
+      }
     }
 
     for (const item of account.materials) {
-      ids.add(item.id);
+      if (item.count > 0) {
+        ids.add(item.id);
+      }
     }
 
     for (const character of characters) {
-      for (const item of character.inventory) {
-        ids.add(item.id);
+      for (const bag of character.inventory.bags) {
+        for (const item of bag.inventory) {
+          if (item && item.count > 0) {
+            ids.add(item.id);
+          }
+        }
       }
 
       for (const tab of character.equipmenttabs) {
         for (const item of tab.equipment) {
-          ids.add(item.id);
+          if (item.count > 0) {
+            ids.add(item.id);
+          }
         }
       }
     }
@@ -184,13 +201,9 @@ export class Gw2DataCollector {
 
   async collectItemstats(
     items: Item[],
-    account: {
-      inventory: AccountInventorySlot[];
-      bank: AccountBankSlot[];
-      materials: AccountMaterial[];
-    },
-    characters: { inventory: CharacterInventorySlot[]; equipmenttabs: CharacterEquipmenttab[] }[]
-  ) {
+    account: AccountData,
+    characters: CharacterData[]
+  ): Promise<Itemstat[]> {
     const ids = this.collectItemstatsIds(items, account, characters);
 
     if (!ids.length) {
@@ -218,15 +231,7 @@ export class Gw2DataCollector {
     });
   }
 
-  private collectItemstatsIds(
-    items: Item[],
-    account: {
-      inventory: AccountInventorySlot[];
-      bank: AccountBankSlot[];
-      materials: AccountMaterial[];
-    },
-    characters: { inventory: CharacterInventorySlot[]; equipmenttabs: CharacterEquipmenttab[] }[]
-  ) {
+  private collectItemstatsIds(items: Item[], account: AccountData, characters: CharacterData[]) {
     const ids = new Set<number>();
 
     for (const item of items) {
@@ -236,15 +241,17 @@ export class Gw2DataCollector {
     }
 
     for (const item of account.bank) {
-      if (item.stats?.id) {
+      if (item && item.stats?.id) {
         ids.add(item.stats?.id);
       }
     }
 
     for (const character of characters) {
-      for (const item of character.inventory) {
-        if (item.stats?.id) {
-          ids.add(item.stats?.id);
+      for (const bag of character.inventory.bags) {
+        for (const item of bag.inventory) {
+          if (item && item.stats?.id) {
+            ids.add(item.stats?.id);
+          }
         }
       }
 
@@ -258,41 +265,6 @@ export class Gw2DataCollector {
     }
 
     return Array.from(ids);
-  }
-
-  private filterSlots<T extends Slot>(slots: Slots) {
-    // filter out empty slots
-
-    return slots.filter((slot): slot is T => {
-      return slot != null;
-    });
-  }
-
-  private filterMaterials(materials: AccountMaterial[]) {
-    return materials.filter((material) => {
-      return material.count > 0;
-    });
-  }
-
-  private flattenBags(bags: CharacterInventoryBag[]) {
-    // flatten items of all bags into one list
-    // filter out empty slot
-
-    return bags
-      .flatMap((bag) => {
-        return bag.inventory;
-      })
-      .filter((item): item is CharacterInventorySlot => {
-        return item != null;
-      });
-  }
-
-  private filterEquipment(equipmentTabs: CharacterEquipmenttabs) {
-    // filter out empty equipment tabs
-
-    return equipmentTabs.filter((tab) => {
-      return tab.equipment.length;
-    });
   }
 }
 
