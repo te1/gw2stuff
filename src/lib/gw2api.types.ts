@@ -369,7 +369,51 @@ export interface ItemConsumable extends ItemBase {
 }
 
 export interface ItemDetailsConsumable {
-  // TODO
+  // Consumable type. Possible values:
+  type:
+    | 'AppearanceChange' // For Total Makeover Kits, Self-Style Hair Kits, and Name Change Contracts
+    | 'Booze' // Alcohol consumables
+    | 'ContractNpc' // For Trading Post Express, Merchant Express, Golem Banker, Banker Golem (2 weeks)
+    | 'Currency' // Some currencies
+    | 'Food' // Food consumables
+    | 'Generic' // Various consumables
+    | 'Halloween' // Some boosters
+    | 'Immediate' // Consumables granting immediate effect (most boosters, Pacified Magical Storm). Also used for currency items that are consumed immediately upon receipt.
+    | 'MountRandomUnlock' // For Mount licenses
+    | 'RandomUnlock' // For Guaranteed (Armor, Wardrobe, Weapon; Blue-Green Dye, Purple-Gray Dye, Red-Brown Dye, Yellow-Orange Dye) Unlocks
+    | 'Transmutation' // Skin consumables
+    | 'Unlock' // Unlock consumables
+    | 'UpgradeRemoval' // For Upgrade Extractor
+    | 'Utility' // Utility items (Potions etc.)
+    | 'TeleportToFriend'; // Used for Teleport to Friend
+
+  description?: string; // Effect description for consumables applying an effect.
+  duration_ms?: number; // Effect duration in milliseconds.
+
+  // Unlock type for unlock consumables. Possible values:
+  unlock_type?:
+    | 'BagSlot' // For Bag Slot Expansion
+    | 'BankTab' // For Bank Tab Expansion
+    | 'Champion' // For Mist Champions
+    | 'CollectibleCapacity' // For Storage Expander
+    | 'Content' // Finishers and Collection unlocks, and Commander's Compendium
+    | 'CraftingRecipe' // Crafting recipes
+    | 'Dye' // Dyes
+    | 'GliderSkin' // For Gliders
+    | 'Minipet' // For Miniatures
+    | 'Ms' // For Mount Skins
+    | 'Outfit' // For Outfits
+    | 'RandomUlock' // for items which unlock a random selection from a given set (see Guaranteed Wardrobe Unlock).
+    | 'SharedSlot'; // For Shared Inventory Slots
+
+  color_id?: number; // The dye id for dye unlocks.
+  recipe_id?: number; // The recipe id for recipe unlocks.
+  extra_recipe_ids?: number[]; // Additional recipe ids for recipe unlocks.
+  guild_upgrade_id?: number; // The guild upgrade id for the item; resolvable against API:2/guild/upgrades.
+  apply_count?: number; // The number of stacks of the effect applied by this item.
+  name?: string; // The effect type name of the consumable.
+  icon?: string; // The icon of the effect.
+  skins?: number[]; // A list of skin ids which this item unlocks; resolvable against API:2/skins.
 }
 
 // https://wiki.guildwars2.com/wiki/API:2/items#Container
@@ -419,7 +463,15 @@ export interface ItemGizmo extends ItemBase {
 
 // For gizmo items, the details object contains the following properties:
 export interface ItemDetailsGizmo {
-  // TODO
+  // The gizmo type. Possible values:
+  type:
+    | 'Default'
+    | 'ContainerKey' // For Black Lion Chest Keys.
+    | 'RentableContractNpc' // For time-limited NPC services (e.g. Golem Banker, Personal Merchant Express)
+    | 'UnlimitedConsumable'; // For Permanent Self-Style Hair Kit
+
+  guild_upgrade_id?: number; // The id for the Guild Decoration which will be deposited into the Guild storage uppon consumption of the Item; resolvable against API:2/guild/upgrades.
+  vendor_ids?: number[];
 }
 
 export interface ItemJadeTechModule extends ItemBase {
@@ -439,7 +491,7 @@ export interface ItemMiniature extends ItemBase {
 
 // For miniatures (MiniPets), the details object contains the following property:
 export interface ItemDetailsMiniature {
-  // TODO
+  minipet_id: number; // The miniature it unlocks and can be resolved against /v2/minis
 }
 
 export interface ItemPowerCore extends ItemBase {
@@ -455,7 +507,8 @@ export interface ItemSalvageKit extends ItemBase {
 
 // For salvage kits (tools), the details object contains the following properties:
 export interface ItemDetailsSalvageKit {
-  // TODO
+  type: 'Salvage'; // The tool type. Always Salvage
+  charges: number; // Number of charges.
 }
 
 export interface ItemTrait extends ItemBase {
@@ -470,7 +523,18 @@ export interface ItemTrinket extends ItemBase {
 }
 
 export interface ItemDetailsTrinket {
-  // TODO
+  // The trinket type. Possible values:
+  type:
+    | 'Accessory' // Accessory
+    | 'Amulet' // Amulet
+    | 'Ring'; // Ring
+
+  infusion_slots: ItemInfusionSlot[]; // Infusion slots of the trinket (see below).
+  attribute_adjustment: number; // The (x) value to be combined with the (m, gradient) multiplier and (c, offset) value to calculate the value of an attribute using API:2/itemstats.
+  infix_upgrade?: ItemInfixUpgrade; // The infix upgrade object (see below).
+  suffix_item_id?: number; // The suffix item id. This is usually a jewel or gem.
+  secondary_suffix_item_id: string; // The secondary suffix item id. Equals to an empty string if there is no secondary suffix item.
+  stat_choices?: number[]; // A list of selectable stat IDs which are visible in API:2/itemstats
 }
 
 export interface ItemTrophy extends ItemBase {
@@ -484,8 +548,54 @@ export interface ItemUpgradeComponent extends ItemBase {
   details?: ItemDetailsUpgradeComponent;
 }
 
+// Note: For runes, the effect is specified in the bonuses property. In that case, the infix_upgrade does not contain a buff property. All other upgrade components don't list a bonuses property but specify all their effects in the buff subproperty.
 export interface ItemDetailsUpgradeComponent {
-  // TODO
+  // The type of the upgrade component. Possible values:
+  type:
+    | 'Default' // Infusions and Jewels (and historical PvP runes/sigils)
+    | 'Gem' // Universal upgrades (Gemstones, Doubloons, and Marks/Crests/etc.)
+    | 'Rune' // Rune
+    | 'Sigil'; // Sigil
+
+  // The items that can be upgraded with the upgrade component. Possible values:
+  flags: Array<
+    // Weapons:
+    | 'Axe'
+    | 'Dagger'
+    | 'Focus'
+    | 'reatsword'
+    | 'Hammer'
+    | 'Harpoon'
+    | 'LongBow'
+    | 'Mace'
+    | 'Pistol'
+    | 'Rifle'
+    | 'Scepter'
+    | 'Shield'
+    | 'ShortBow'
+    | 'Speargun'
+    | 'Staff'
+    | 'Sword'
+    | 'Torch'
+    | 'Trident'
+    | 'Warhor'
+    // Armor:
+    | 'HeavyArmor'
+    | 'MediumArmor'
+    | 'LightArmor'
+    // Trinkets:
+    | 'Trinket'
+  >;
+
+  // Applicable infusion slot for infusion upgrades. Possible values:
+  infusion_upgrade_flags: Array<
+    | 'Enrichment' // Enrichments
+    | 'Infusion' // Infusions
+  >;
+
+  suffix: string; // The suffix appended to the item name when the component is applied.
+  infix_upgrade: ItemInfixUpgrade; // The infix upgrade object (see below).
+  bonuses?: string[]; // The bonuses from runes.
 }
 
 // https://wiki.guildwars2.com/wiki/API:2/items#Weapon
@@ -496,8 +606,56 @@ export interface ItemWeapon extends ItemBase {
 }
 
 export interface ItemDetailsWeapon {
-  // TODO
+  // The weapon type.
+  type: // One-handed main hand:
+  | 'Axe'
+    | 'Dagger'
+    | 'Mace'
+    | 'Pistol'
+    | 'Scepter'
+    | 'Sword'
+    // One-handed off hand:
+    | 'Focus'
+    | 'Shield'
+    | 'Torch'
+    | 'Warhorn '
+    // Two-handed:
+    | 'Greatsword'
+    | 'Hammer'
+    | 'LongBow'
+    | 'Rifle'
+    | 'ShortBow'
+    | 'Staff'
+    // Aquatic:
+    | 'Harpoon'
+    | 'Speargun'
+    | 'Trident'
+    // Other:
+    | 'LargeBundle'
+    | 'SmallBundle'
+    | 'Toy'
+    | 'ToyTwoHanded';
+
+  // The damage type.
+  damage_type:
+    | 'Fire' // Fire damage
+    | 'Ice' // Ice damage
+    | 'Lightning' // Lighting damage
+    | 'Physical' // Physical damage.
+    | 'Choking';
+
+  min_power: number; // Minimum weapon strength.
+  max_power: number; // Maximum weapon strength.
+  defense: number; // The defense value of the weapon (for shields).
+  infusion_slots: ItemInfusionSlot[]; // Infusion slots of the weapon (see below).
+  attribute_adjustment: number; // The (x) value to be combined with the (m, gradient) multiplier and (c, offset) value to calculate the value of an attribute using API:2/itemstats.
+  infix_upgrade?: ItemInfixUpgrade; // The infix upgrade object (see below).
+  suffix_item_id?: number; // The suffix item id. This is usually a sigil.
+  secondary_suffix_item_id: string; // The secondary suffix item id. Equals to an empty string if there is no secondary suffix item.
+  stat_choices?: number[]; // A list of selectable stats IDs which are visible in API:2/itemstats
 }
+
+// Crafting materials, trophies, and Traits don't have an additional details object.
 
 // https://wiki.guildwars2.com/wiki/API:2/items#Infix_upgrade_subobject
 export interface ItemInfixUpgrade {
