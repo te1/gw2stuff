@@ -31,7 +31,19 @@ export class Gw2Api {
     let success = false;
     let message = '';
 
-    const data = await res.json();
+    let data: unknown;
+    let dataText = '';
+
+    const contentType = res.headers.get('content-type');
+    if (contentType && contentType.indexOf('application/json') !== -1) {
+      data = await res.json();
+
+      if (data && typeof data === 'object' && 'text' in data && typeof data.text === 'string') {
+        dataText = data.text;
+      }
+    } else {
+      dataText = await res.text();
+    }
 
     if (res.ok) {
       success = true;
@@ -40,15 +52,15 @@ export class Gw2Api {
       // 400 is returned it the API key is invalid
       // 400 is also returned if other request parameters are invalid
 
-      if (data.text === 'invalid key') {
+      if (dataText === 'invalid key') {
         message = 'Invalid API key'; // nicer message
       } else {
-        message = data.text;
+        message = dataText;
       }
     } else {
       // fallback message with more error details
 
-      message = `${res.status}: ${res.statusText}, ${data.text}`;
+      message = `${res.status}: ${res.statusText}, ${dataText}`;
     }
 
     return {
