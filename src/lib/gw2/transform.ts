@@ -7,11 +7,11 @@ import type {
   AccountMaterial,
   CharacterEquipmenttab,
   CharacterEquipmenttabs,
-  CharacterInventoryBag,
   CharacterInventoryBags,
   CharacterInventorySlot,
   Item,
   Itemstat,
+  ItemstatAttribute,
   Slot,
   Slots,
 } from './types';
@@ -19,6 +19,11 @@ import type {
 export type AccountMaterialSlim = Omit<AccountMaterial, 'category'>;
 
 export type CharacterEquipmenttabSlim = Omit<CharacterEquipmenttab, 'equipment_pvp'>;
+
+export type ItemstatAttributeSlim = Omit<ItemstatAttribute, 'value'>;
+export interface ItemstatSlim extends Omit<Itemstat, 'attributes'> {
+  attributes: ItemstatAttributeSlim[];
+}
 
 export function transformData(data: Data) {
   return {
@@ -140,5 +145,19 @@ function transformItems(items: Item[]) {
 }
 
 function transformItemstats(itemstats: Itemstat[]) {
-  return itemstats;
+  return itemstats.map((stat) => {
+    const statSlim: ItemstatSlim = { ...stat };
+
+    statSlim.attributes = stat.attributes.map((attribute) => {
+      const attributeSlim: Partial<Pick<ItemstatAttribute, 'value'>> & ItemstatAttributeSlim = {
+        ...attribute,
+      };
+
+      delete attributeSlim.value;
+
+      return attributeSlim;
+    });
+
+    return statSlim;
+  });
 }

@@ -745,21 +745,23 @@ export interface Itemstat {
   name: string; // The name of the set of stats.
 
   // List of attribute bonuses. Each object may contain the following
-  attributes: {
-    // The name of the attribute, may be one of the following
-    attribute:
-      | 'AgonyResistance' // Agony Resistance
-      | 'BoonDuration' // Concentration
-      | 'ConditionDamage' // Condition Damage
-      | 'ConditionDuration' // Expertise
-      | 'CritDamage' // Ferocity
-      | 'Healing' // Healing Power
-      | 'Power' // Power
-      | 'Precision' // Precision
-      | 'Toughness' // Toughness
-      | 'Vitality'; // Vitality
+  attributes: ItemstatAttribute[];
+}
 
-    multiplier: number; // The multiplier number for that attribute.
-    value: number; // The value number for that attribute.
-  }[];
+export interface ItemstatAttribute {
+  // The name of the attribute, may be one of the following
+  attribute:
+    | 'AgonyResistance' // Agony Resistance
+    | 'BoonDuration' // Concentration
+    | 'ConditionDamage' // Condition Damage
+    | 'ConditionDuration' // Expertise
+    | 'CritDamage' // Ferocity
+    | 'Healing' // Healing Power
+    | 'Power' // Power
+    | 'Precision' // Precision
+    | 'Toughness' // Toughness
+    | 'Vitality'; // Vitality
+
+  multiplier: number; // The multiplier number for that attribute.
+  value: number; // The value number for that attribute.
 }
