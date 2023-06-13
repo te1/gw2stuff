@@ -5,13 +5,20 @@ import type {
   AccountInventory,
   AccountInventorySlot,
   AccountMaterial,
+  CharacterEquipmenttab,
+  CharacterEquipmenttabs,
+  CharacterInventoryBag,
+  CharacterInventoryBags,
+  CharacterInventorySlot,
   Item,
   Itemstat,
   Slot,
   Slots,
 } from './types';
 
-export type SlimAccountMaterial = Omit<AccountMaterial, 'category'>;
+export type AccountMaterialSlim = Omit<AccountMaterial, 'category'>;
+
+export type CharacterEquipmenttabSlim = Omit<CharacterEquipmenttab, 'equipment_pvp'>;
 
 export function transformData(data: Data) {
   return {
@@ -43,20 +50,89 @@ function transformAccountBank(bank: AccountBank) {
   });
 }
 
-function transformAccountMaterials(materials: AccountMaterial[]): SlimAccountMaterial[] {
+function filterSlots<T extends Slot>(slots: Slots) {
+  // filter out empty slots
+
+  return slots.filter((slot): slot is T => {
+    return slot != null;
+  });
+}
+
+function transformAccountMaterials(materials: AccountMaterial[]): AccountMaterialSlim[] {
   return materials.map((material) => {
-    const slimMaterial: Partial<Pick<AccountMaterial, 'category'>> & SlimAccountMaterial = {
+    const materialSlim: Partial<Pick<AccountMaterial, 'category'>> & AccountMaterialSlim = {
       ...material,
     };
 
-    delete slimMaterial.category;
+    delete materialSlim.category;
 
-    return slimMaterial;
+    return materialSlim;
   });
 }
 
 function transformCharacters(characters: CharacterData[]) {
-  return characters;
+  return characters.map((character) => {
+    return transformCharacter(character);
+  });
+}
+
+function transformCharacter(character: CharacterData) {
+  return {
+    name: character.core.name,
+    race: character.core.race,
+    profession: character.core.profession,
+    level: character.core.level,
+    inventory: transformInventory(character.inventory),
+    equipmenttabs: transformEquipmenttabs(character.equipmenttabs),
+  };
+}
+
+function transformInventory(inventory: CharacterInventoryBags) {
+  return (
+    inventory.bags
+      // flatten items of all bags into one list
+      .flatMap((bag) => {
+        return bag.inventory;
+      })
+      // filter out empty slots
+      .filter((item): item is CharacterInventorySlot => {
+        return item != null;
+      })
+      .map((slot) => {
+        delete slot.dyes;
+
+        return slot;
+      })
+  );
+}
+
+function transformEquipmenttabs(
+  equipmentTabs: CharacterEquipmenttabs
+): CharacterEquipmenttabSlim[] {
+  return filterEquipmenttabs(equipmentTabs).map((tab) => {
+    const tabSlim: Partial<Pick<CharacterEquipmenttab, 'equipment_pvp'>> &
+      CharacterEquipmenttabSlim = {
+      ...tab,
+    };
+
+    delete tabSlim.equipment_pvp;
+
+    tabSlim.equipment = tabSlim.equipment.map((slot) => {
+      delete slot.dyes;
+
+      return slot;
+    });
+
+    return tabSlim;
+  });
+}
+
+function filterEquipmenttabs(equipmentTabs: CharacterEquipmenttabs) {
+  // filter out empty equipment tabs
+
+  return equipmentTabs.filter((tab) => {
+    return tab.equipment.length;
+  });
 }
 
 function transformItems(items: Item[]) {
@@ -66,38 +142,3 @@ function transformItems(items: Item[]) {
 function transformItemstats(itemstats: Itemstat[]) {
   return itemstats;
 }
-
-// return {
-//   core: core.data,
-//   inventory: this.flattenBags(inventory.data.bags),
-//   equipmenttabs: this.filterEquipment(equipmenttabs.data),
-// };
-
-function filterSlots<T extends Slot>(slots: Slots) {
-  // filter out empty slots
-
-  return slots.filter((slot): slot is T => {
-    return slot != null;
-  });
-}
-
-// private flattenBags(bags: CharacterInventoryBag[]) {
-//   // flatten items of all bags into one list
-//   // filter out empty slot
-
-//   return bags
-//     .flatMap((bag) => {
-//       return bag.inventory;
-//     })
-//     .filter((item): item is CharacterInventorySlot => {
-//       return item != null;
-//     });
-// }
-
-// private filterEquipment(equipmentTabs: CharacterEquipmenttabs) {
-//   // filter out empty equipment tabs
-
-//   return equipmentTabs.filter((tab) => {
-//     return tab.equipment.length;
-//   });
-// }
