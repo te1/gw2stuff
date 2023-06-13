@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { makeGw2Api } from '$lib/server/gw2api';
+import { makeGw2Api } from '$lib/gw2/api.server';
 
 export async function POST({ request, fetch }) {
   const api = await makeGw2Api(request, fetch);

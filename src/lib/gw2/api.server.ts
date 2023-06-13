@@ -17,7 +17,7 @@ import type {
   Itemstat,
   Slot,
   Slots,
-} from '../gw2api.types';
+} from './types';
 
 type Fetch = typeof fetch;
 

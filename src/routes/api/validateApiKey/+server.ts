@@ -1,4 +1,4 @@
-import { getGw2Api } from '$lib/server/gw2api';
+import { getGw2Api } from '$lib/gw2/api.server';
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request, fetch }) {
