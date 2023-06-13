@@ -1,3 +1,29 @@
+// https://wiki.guildwars2.com/wiki/API:2/tokeninfo
+export interface Tokeninfo {
+  id: string; // The first half of the API key that was requested.
+  name: string; // The name given to the API key by the account owner. Warning: The value of this field is not escaped and may contain valid HTML, JavaScript, other code. Handle with care.
+
+  // Array of strings describing which permissions the API key has. The array can contain any of:
+  permissions: Array<
+    | 'account' // Grants access to the /v2/account endpoint (This permission is required for all API keys).
+    | 'builds' // Grants access to view each character's equipped specializations and gear.
+    | 'characters' // Grants access to the /v2/characters endpoint.
+    | 'guilds' // Grants access to guild info under the /v2/guild/:id/ sub-endpoints.
+    | 'inventories' // Grants access to inventories in the /v2/characters, /v2/account/bank, and /v2/account/materials endpoints.
+    | 'progression' // Grants access to achievements, dungeon unlock status, mastery point assignments, and general PvE progress.
+    | 'pvp' // Grants access to the /v2/pvp sub-endpoints. (i.e. /v2/pvp/games, /v2/pvp/stats)
+    | 'tradingpost' // Grants access to the /v2/commerce/transactions endpoint.
+    | 'unlocks' // Grants access to the /v2/account/skins and /v2/account/dyes endpoints.
+    | 'wallet' // Grants access to the /v2/account/wallet endpoint.
+  >;
+
+  // Additional fields as of schema 2019-05-22T00:00:00.000Z and later:
+  type: string; // The type of the access token given. Either APIKey or Subtoken.
+  expires_at?: string; // If a subtoken is given, ISO8601 timestamp indicating when the given subtoken expires.
+  issued_at?: string; // If a subtoken is given, ISO8601 timestamp indicating when the given subtoken was created.
+  urls?: string[]; // If the given subtoken is restricted to a list of URLs, contains an array of strings describing what endpoints are available to this token.
+}
+
 // https://wiki.guildwars2.com/wiki/API:2/account
 export interface Account {
   id: string; // The unique persistent account GUID.
@@ -10,14 +36,13 @@ export interface Account {
 
   // A list of what content this account has access to. Possible values:
   access: Array<
-    'None' | 'PlayForFree' | 'GuildWars2' | 'HeartOfThorns' | 'PathOfFire' | 'EndOfDragons'
+    | 'None' // should probably never happen
+    | 'PlayForFree' // without any other flags, this identifies an account which has not yet purchased the game. (This flag does however also appear on accounts who have purchased the base game or any of the expansions).
+    | 'GuildWars2' // has purchased the base game
+    | 'HeartOfThorns' // has purchased Heart of Thorns, accounts that recieve Heart of Thorns by purchasing Path of Fire will not have this flag set.
+    | 'PathOfFire' // has purchased Path of Fire, this flag also implies that the account has access to Heart of Thorns.
+    | 'EndOfDragons' // has purchased End of Dragons
   >;
-  // None          – should probably never happen
-  // PlayForFree   – without any other flags, this identifies an account which has not yet purchased the game. (This flag does however also appear on accounts who have purchased the base game or any of the expansions).
-  // GuildWars2    – has purchased the base game
-  // HeartOfThorns – has purchased Heart of Thorns, accounts that recieve Heart of Thorns by purchasing Path of Fire will not have this flag set.
-  // PathOfFire    – has purchased Path of Fire, this flag also implies that the account has access to Heart of Thorns.
-  // EndOfDragons  - has purchased End of Dragons
 
   commander: boolean; // True if the player has bought a commander tag.
   fractal_level: number; // The account's personal fractal reward level. Requires the additional progression scope.
@@ -117,9 +142,9 @@ export interface CharacterInventorySlot extends Slot {
 }
 
 // https://wiki.guildwars2.com/wiki/API:2/characters/:id/equipmenttabs
-export type CharacterEquipmentTabs = CharacterEquipmentTab[];
+export type CharacterEquipmenttabs = CharacterEquipmenttab[];
 
-export interface CharacterEquipmentTab {
+export interface CharacterEquipmenttab {
   tab: number; // The "id" of this tab. (The position at which it resides.)
   name: string; // The name given to the equipment combination.
   is_active: boolean; // Whether or not this is the tab selected on the character currently.
