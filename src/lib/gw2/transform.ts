@@ -5,25 +5,20 @@ import type {
   AccountInventory,
   AccountInventorySlot,
   AccountMaterial,
+  AccountMaterialSlim,
   CharacterEquipmenttab,
+  CharacterEquipmenttabSlim,
   CharacterEquipmenttabs,
   CharacterInventoryBags,
   CharacterInventorySlot,
   Item,
   Itemstat,
   ItemstatAttribute,
+  ItemstatAttributeSlim,
+  ItemstatSlim,
   Slot,
   Slots,
 } from './types';
-
-export type AccountMaterialSlim = Omit<AccountMaterial, 'category'>;
-
-export type CharacterEquipmenttabSlim = Omit<CharacterEquipmenttab, 'equipment_pvp'>;
-
-export type ItemstatAttributeSlim = Omit<ItemstatAttribute, 'value'>;
-export interface ItemstatSlim extends Omit<Itemstat, 'attributes'> {
-  attributes: ItemstatAttributeSlim[];
-}
 
 export function transformData(data: Data) {
   return {

@@ -765,3 +765,13 @@ export interface ItemstatAttribute {
   multiplier: number; // The multiplier number for that attribute.
   value: number; // The value number for that attribute.
 }
+
+// "Slim" versions that omit certain props
+export type AccountMaterialSlim = Omit<AccountMaterial, 'category'>;
+
+export type CharacterEquipmenttabSlim = Omit<CharacterEquipmenttab, 'equipment_pvp'>;
+
+export type ItemstatAttributeSlim = Omit<ItemstatAttribute, 'value'>;
+export interface ItemstatSlim extends Omit<Itemstat, 'attributes'> {
+  attributes: ItemstatAttributeSlim[];
+}
