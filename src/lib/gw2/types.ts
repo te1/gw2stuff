@@ -257,22 +257,7 @@ export interface ItemBase {
   >;
 
   // Restrictions applied to the item. Possible values:
-  restrictions: Array<
-    | 'Asura'
-    | 'Charr'
-    | 'Female'
-    | 'Human'
-    | 'Norn'
-    | 'Sylvari'
-    | 'Elementalist'
-    | 'Engineer'
-    | 'Guardian'
-    | 'Mesmer'
-    | 'Necromancer'
-    | 'Ranger'
-    | 'Thief'
-    | 'Warrior'
-  >;
+  restrictions: Array<ItemRestriction>;
 
   // Lists what items this item can be upgraded into, and the method of upgrading. Each object in the array has the following attributes
   upgrades_into?: ItemUpgrade[];
@@ -282,6 +267,22 @@ export interface ItemBase {
 
   details?: ItemDetails; // Additional item details if applicable, depending on the item type (see below).
 }
+
+type ItemRestriction =
+  | 'Asura'
+  | 'Charr'
+  | 'Female'
+  | 'Human'
+  | 'Norn'
+  | 'Sylvari'
+  | 'Elementalist'
+  | 'Engineer'
+  | 'Guardian'
+  | 'Mesmer'
+  | 'Necromancer'
+  | 'Ranger'
+  | 'Thief'
+  | 'Warrior';
 
 export interface ItemUpgrade {
   // Describes the method of upgrading. Possible values:
@@ -774,4 +775,19 @@ export type CharacterEquipmenttabSlim = Omit<CharacterEquipmenttab, 'equipment_p
 export type ItemstatAttributeSlim = Omit<ItemstatAttribute, 'value'>;
 export interface ItemstatSlim extends Omit<Itemstat, 'attributes'> {
   attributes: ItemstatAttributeSlim[];
+}
+
+export interface ItemSlim
+  extends Omit<
+    Item,
+    | 'chat_link'
+    | 'game_types'
+    | 'flags'
+    | 'vendor_value'
+    | 'restrictions'
+    | 'description'
+    | 'upgrades_from'
+    | 'upgrades_into'
+  > {
+  restrictions?: Array<ItemRestriction>;
 }

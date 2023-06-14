@@ -12,6 +12,7 @@ import type {
   CharacterInventoryBags,
   CharacterInventorySlot,
   Item,
+  ItemSlim,
   Itemstat,
   ItemstatAttribute,
   ItemstatAttributeSlim,
@@ -136,7 +137,27 @@ function filterEquipmenttabs(equipmentTabs: CharacterEquipmenttabs) {
 }
 
 function transformItems(items: Item[]) {
-  return items;
+  return items.map((item) => {
+    delete item.description;
+    delete item.upgrades_from;
+    delete item.upgrades_into;
+
+    const itemSlim: Partial<Pick<Item, 'chat_link' | 'game_types' | 'flags' | 'vendor_value'>> &
+      ItemSlim = { ...item };
+
+    delete itemSlim.chat_link;
+    delete itemSlim.flags;
+    delete itemSlim.game_types;
+    delete itemSlim.vendor_value;
+
+    if (!item.restrictions.length) {
+      delete itemSlim.restrictions;
+    }
+
+    // item.details ...
+
+    return itemSlim;
+  });
 }
 
 function transformItemstats(itemstats: Itemstat[]) {
