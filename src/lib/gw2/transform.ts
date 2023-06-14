@@ -16,6 +16,24 @@ import type {
   CharacterInventorySlot,
   CharacterInventorySlotSlim,
   Item,
+  ItemDetailsArmor,
+  ItemDetailsArmorSlim,
+  ItemDetailsBack,
+  ItemDetailsBackSlim,
+  ItemDetailsBag,
+  ItemDetailsBagSlim,
+  ItemDetailsConsumable,
+  ItemDetailsConsumableSlim,
+  ItemDetailsGizmo,
+  ItemDetailsGizmoSlim,
+  ItemDetailsSalvageKit,
+  ItemDetailsSalvageKitSlim,
+  ItemDetailsTrinket,
+  ItemDetailsTrinketSlim,
+  ItemDetailsUpgradeComponent,
+  ItemDetailsUpgradeComponentSlim,
+  ItemDetailsWeapon,
+  ItemDetailsWeaponSlim,
   ItemSlim,
   Itemstat,
   ItemstatAttribute,
@@ -49,9 +67,7 @@ function transformAccountInventory(inventory: AccountInventory) {
 
 function transformAccountBank(bank: AccountBank): AccountBankSlotSlim[] {
   return filterSlots<AccountBankSlot>(bank).map((slot) => {
-    const slotSlim: Partial<Pick<AccountBankSlot, 'dyes'>> & AccountBankSlotSlim = {
-      ...slot,
-    };
+    const slotSlim: Partial<Pick<AccountBankSlot, 'dyes'>> & AccountBankSlotSlim = { ...slot };
 
     delete slotSlim.dyes;
 
@@ -123,9 +139,7 @@ function transformEquipmenttabs(
 ): CharacterEquipmenttabSlim[] {
   return filterEquipmenttabs(equipmentTabs).map((tab) => {
     const tabSlim: Partial<Pick<CharacterEquipmenttab, 'equipment_pvp'>> &
-      CharacterEquipmenttabSlim = {
-      ...tab,
-    };
+      CharacterEquipmenttabSlim = { ...tab };
 
     delete tabSlim.equipment_pvp;
 
@@ -179,10 +193,162 @@ function transformItems(items: Item[]): ItemSlim[] {
       delete itemSlim.restrictions;
     }
 
-    // item.details ...
+    itemSlim.details = transformItemDetails(item);
 
     return itemSlim;
   });
+}
+
+function transformItemDetails(item: Item) {
+  if (!item.details) {
+    return;
+  }
+
+  switch (item.type) {
+    case 'Armor': {
+      const detailsSlim: Partial<Pick<ItemDetailsArmor, 'attribute_adjustment'>> &
+        ItemDetailsArmorSlim = { ...item.details };
+
+      delete detailsSlim.attribute_adjustment;
+
+      if (!detailsSlim.infusion_slots?.length) {
+        delete detailsSlim.infusion_slots;
+      }
+
+      if (!detailsSlim.secondary_suffix_item_id) {
+        delete detailsSlim.secondary_suffix_item_id;
+      }
+
+      return detailsSlim;
+    }
+
+    case 'Back': {
+      const detailsSlim: Partial<Pick<ItemDetailsBack, 'attribute_adjustment'>> &
+        ItemDetailsBackSlim = { ...item.details };
+
+      delete detailsSlim.attribute_adjustment;
+
+      if (!detailsSlim.infusion_slots?.length) {
+        delete detailsSlim.infusion_slots;
+      }
+
+      if (!detailsSlim.secondary_suffix_item_id) {
+        delete detailsSlim.secondary_suffix_item_id;
+      }
+
+      return detailsSlim;
+    }
+
+    case 'Bag': {
+      const detailsSlim: Partial<Pick<ItemDetailsBag, 'no_sell_or_sort'>> & ItemDetailsBagSlim = {
+        ...item.details,
+      };
+
+      delete detailsSlim.no_sell_or_sort;
+
+      return detailsSlim;
+    }
+
+    case 'Consumable': {
+      const detailsSlim: Partial<
+        Pick<
+          ItemDetailsConsumable,
+          | 'description'
+          | 'duration_ms'
+          | 'color_id'
+          | 'recipe_id'
+          | 'extra_recipe_ids'
+          | 'guild_upgrade_id'
+          | 'apply_count'
+          | 'skins'
+        >
+      > &
+        ItemDetailsConsumableSlim = { ...item.details };
+
+      delete detailsSlim.description;
+      delete detailsSlim.duration_ms;
+      delete detailsSlim.color_id;
+      delete detailsSlim.recipe_id;
+      delete detailsSlim.extra_recipe_ids;
+      delete detailsSlim.guild_upgrade_id;
+      delete detailsSlim.apply_count;
+      delete detailsSlim.skins;
+
+      return detailsSlim;
+    }
+
+    case 'Gizmo': {
+      const detailsSlim: Partial<Pick<ItemDetailsGizmo, 'guild_upgrade_id' | 'vendor_ids'>> &
+        ItemDetailsGizmoSlim = { ...item.details };
+
+      delete detailsSlim.guild_upgrade_id;
+      delete detailsSlim.vendor_ids;
+
+      return detailsSlim;
+    }
+
+    case 'Tool': {
+      const detailsSlim: Partial<Pick<ItemDetailsSalvageKit, 'type'>> & ItemDetailsSalvageKitSlim =
+        { ...item.details };
+
+      delete detailsSlim.type;
+
+      return detailsSlim;
+    }
+
+    case 'Trinket': {
+      const detailsSlim: Partial<Pick<ItemDetailsTrinket, 'attribute_adjustment'>> &
+        ItemDetailsTrinketSlim = { ...item.details };
+
+      delete detailsSlim.attribute_adjustment;
+
+      if (!detailsSlim.infusion_slots?.length) {
+        delete detailsSlim.infusion_slots;
+      }
+
+      if (!detailsSlim.secondary_suffix_item_id) {
+        delete detailsSlim.secondary_suffix_item_id;
+      }
+
+      return detailsSlim;
+    }
+
+    case 'UpgradeComponent': {
+      const detailsSlim: Partial<
+        Pick<ItemDetailsUpgradeComponent, 'flags' | 'infusion_upgrade_flags'>
+      > &
+        ItemDetailsUpgradeComponentSlim = { ...item.details };
+
+      delete detailsSlim.flags;
+
+      if (!detailsSlim.infusion_upgrade_flags?.length) {
+        delete detailsSlim.infusion_upgrade_flags;
+      }
+
+      return detailsSlim;
+    }
+
+    case 'Weapon': {
+      const detailsSlim: Partial<Pick<ItemDetailsWeapon, 'damage_type' | 'attribute_adjustment'>> &
+        ItemDetailsWeaponSlim = { ...item.details };
+
+      delete detailsSlim.damage_type;
+      delete detailsSlim.attribute_adjustment;
+
+      if (!detailsSlim.infusion_slots?.length) {
+        delete detailsSlim.infusion_slots;
+      }
+
+      if (!detailsSlim.secondary_suffix_item_id) {
+        delete detailsSlim.secondary_suffix_item_id;
+      }
+
+      return detailsSlim;
+    }
+
+    default:
+      return item.details;
+  }
 }
 
 function transformItemstats(itemstats: Itemstat[]) {

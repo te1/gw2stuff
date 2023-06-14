@@ -190,7 +190,7 @@ export interface CharacterEquipmentSlot extends Slot {
 }
 
 // https://wiki.guildwars2.com/wiki/API:2/items
-export interface ItemBase {
+interface ItemBase {
   id: number; // The item id.
   chat_link: string; // The chat link.
   name: string; // The item name.
@@ -614,15 +614,14 @@ export interface ItemDetailsUpgradeComponent {
   >;
 
   // Applicable infusion slot for infusion upgrades. Possible values:
-  infusion_upgrade_flags: Array<
-    | 'Enrichment' // Enrichments
-    | 'Infusion' // Infusions
-  >;
+  infusion_upgrade_flags: Array<ItemInfusionUpgradeFlag>;
 
   suffix: string; // The suffix appended to the item name when the component is applied.
   infix_upgrade: ItemInfixUpgrade; // The infix upgrade object (see below).
   bonuses?: string[]; // The bonuses from runes.
 }
+
+type ItemInfusionUpgradeFlag = 'Enrichment' | 'Infusion';
 
 // https://wiki.guildwars2.com/wiki/API:2/items#Weapon
 export interface ItemWeapon extends ItemBase {
@@ -785,12 +784,88 @@ export interface ItemSlim
     | 'game_types'
     | 'flags'
     | 'vendor_value'
-    | 'restrictions'
     | 'description'
     | 'upgrades_from'
     | 'upgrades_into'
+    | 'restrictions'
+    | 'details'
   > {
   restrictions?: Array<ItemRestriction>;
+
+  details?: ItemDetailsSlim;
+}
+
+type ItemDetailsSlim =
+  | ItemDetailsArmorSlim
+  | ItemDetailsBackSlim
+  | ItemDetailsBagSlim
+  | ItemDetailsConsumableSlim
+  | ItemDetailsContainer
+  | ItemDetailsGathering
+  | ItemDetailsGizmoSlim
+  | ItemDetailsMiniature
+  | ItemDetailsSalvageKitSlim
+  | ItemDetailsTrinketSlim
+  | ItemDetailsUpgradeComponentSlim
+  | ItemDetailsWeaponSlim;
+
+export interface ItemDetailsArmorSlim
+  extends Omit<
+    ItemDetailsArmor,
+    'attribute_adjustment' | 'infusion_slots' | 'secondary_suffix_item_id'
+  > {
+  infusion_slots?: ItemInfusionSlot[];
+  secondary_suffix_item_id?: string;
+}
+
+export interface ItemDetailsBackSlim
+  extends Omit<
+    ItemDetailsBack,
+    'attribute_adjustment' | 'infusion_slots' | 'secondary_suffix_item_id'
+  > {
+  infusion_slots?: ItemInfusionSlot[];
+  secondary_suffix_item_id?: string;
+}
+
+export type ItemDetailsBagSlim = Omit<ItemDetailsBag, 'no_sell_or_sort'>;
+
+export type ItemDetailsConsumableSlim = Omit<
+  ItemDetailsConsumable,
+  | 'description'
+  | 'duration_ms'
+  | 'color_id'
+  | 'recipe_id'
+  | 'extra_recipe_ids'
+  | 'guild_upgrade_id'
+  | 'apply_count'
+  | 'skins'
+>;
+
+export type ItemDetailsGizmoSlim = Omit<ItemDetailsGizmo, 'guild_upgrade_id' | 'vendor_ids'>;
+
+export type ItemDetailsSalvageKitSlim = Omit<ItemDetailsSalvageKit, 'type'>;
+
+export interface ItemDetailsTrinketSlim
+  extends Omit<
+    ItemDetailsTrinket,
+    'attribute_adjustment' | 'infusion_slots' | 'secondary_suffix_item_id'
+  > {
+  infusion_slots?: ItemInfusionSlot[];
+  secondary_suffix_item_id?: string;
+}
+
+export interface ItemDetailsUpgradeComponentSlim
+  extends Omit<ItemDetailsUpgradeComponent, 'flags' | 'infusion_upgrade_flags'> {
+  infusion_upgrade_flags?: Array<ItemInfusionUpgradeFlag>;
+}
+
+export interface ItemDetailsWeaponSlim
+  extends Omit<
+    ItemDetailsWeapon,
+    'damage_type' | 'attribute_adjustment' | 'infusion_slots' | 'secondary_suffix_item_id'
+  > {
+  infusion_slots?: ItemInfusionSlot[];
+  secondary_suffix_item_id?: string;
 }
 
 export interface ItemstatSlim extends Omit<Itemstat, 'attributes'> {
