@@ -95,22 +95,13 @@ export interface CharacterCore {
   name: string; // The character's name.
 
   // The character's race. Possible values:
-  race: 'Asura' | 'Charr' | 'Human' | 'Norn' | 'Sylvari';
+  race: CharacterRace;
 
   // The character's gender. Possible values:
   gender: 'Male' | 'Female';
 
   // The character's profession. Possible values:
-  profession:
-    | 'Elementalist'
-    | 'Engineer'
-    | 'Guardian'
-    | 'Mesmer'
-    | 'Necromancer'
-    | 'Ranger'
-    | 'Revenant'
-    | 'Thief'
-    | 'Warrior';
+  profession: CharacterProfession;
 
   level: number; // The character's level.
   guild?: string; // The guild ID of the character's currently represented guild.
@@ -120,6 +111,19 @@ export interface CharacterCore {
   deaths: number; // The amount of times this character has been defeated.
   title?: number; // The currently selected title for the character. References /v2/titles.
 }
+
+export type CharacterRace = 'Asura' | 'Charr' | 'Human' | 'Norn' | 'Sylvari';
+
+export type CharacterProfession =
+  | 'Elementalist'
+  | 'Engineer'
+  | 'Guardian'
+  | 'Mesmer'
+  | 'Necromancer'
+  | 'Ranger'
+  | 'Revenant'
+  | 'Thief'
+  | 'Warrior';
 
 // https://wiki.guildwars2.com/wiki/API:2/characters/:id/inventory
 export interface CharacterInventoryBags {

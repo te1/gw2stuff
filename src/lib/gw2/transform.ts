@@ -15,6 +15,8 @@ import type {
   CharacterInventoryBags,
   CharacterInventorySlot,
   CharacterInventorySlotSlim,
+  CharacterProfession,
+  CharacterRace,
   Item,
   ItemDetailsArmor,
   ItemDetailsArmorSlim,
@@ -43,7 +45,30 @@ import type {
   Slots,
 } from './types';
 
-export function transformData(data: Data) {
+export interface DataSlim {
+  account: AccountDataSlim;
+  characters: CharacterDataSlim[];
+  items: ItemSlim[];
+  itemstats: ItemstatSlim[];
+}
+
+export interface AccountDataSlim {
+  name: string;
+  inventory: AccountInventorySlot[];
+  bank: AccountBankSlotSlim[];
+  materials: AccountMaterialSlim[];
+}
+
+export interface CharacterDataSlim {
+  name: string;
+  race: CharacterRace;
+  profession: CharacterProfession;
+  level: number;
+  inventory: CharacterInventorySlotSlim[];
+  equipmenttabs: CharacterEquipmenttabSlim[];
+}
+
+export function transformData(data: Data): DataSlim {
   return {
     account: transformAccount(data.account),
     characters: transformCharacters(data.characters),
@@ -52,7 +77,7 @@ export function transformData(data: Data) {
   };
 }
 
-function transformAccount(account: AccountData) {
+function transformAccount(account: AccountData): AccountDataSlim {
   return {
     name: account.account.name,
     inventory: transformAccountInventory(account.inventory),
@@ -101,7 +126,7 @@ function transformCharacters(characters: CharacterData[]) {
   });
 }
 
-function transformCharacter(character: CharacterData) {
+function transformCharacter(character: CharacterData): CharacterDataSlim {
   return {
     name: character.core.name,
     race: character.core.race,
