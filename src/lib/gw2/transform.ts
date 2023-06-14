@@ -2,15 +2,19 @@ import type { AccountData, CharacterData, Data } from './collect.server';
 import type {
   AccountBank,
   AccountBankSlot,
+  AccountBankSlotSlim,
   AccountInventory,
   AccountInventorySlot,
   AccountMaterial,
   AccountMaterialSlim,
+  CharacterEquipmentSlot,
+  CharacterEquipmentSlotSlim,
   CharacterEquipmenttab,
   CharacterEquipmenttabSlim,
   CharacterEquipmenttabs,
   CharacterInventoryBags,
   CharacterInventorySlot,
+  CharacterInventorySlotSlim,
   Item,
   ItemSlim,
   Itemstat,
@@ -43,11 +47,15 @@ function transformAccountInventory(inventory: AccountInventory) {
   return filterSlots<AccountInventorySlot>(inventory);
 }
 
-function transformAccountBank(bank: AccountBank) {
+function transformAccountBank(bank: AccountBank): AccountBankSlotSlim[] {
   return filterSlots<AccountBankSlot>(bank).map((slot) => {
-    delete slot.dyes;
+    const slotSlim: Partial<Pick<AccountBankSlot, 'dyes'>> & AccountBankSlotSlim = {
+      ...slot,
+    };
 
-    return slot;
+    delete slotSlim.dyes;
+
+    return slotSlim;
   });
 }
 
@@ -88,7 +96,7 @@ function transformCharacter(character: CharacterData) {
   };
 }
 
-function transformInventory(inventory: CharacterInventoryBags) {
+function transformInventory(inventory: CharacterInventoryBags): CharacterInventorySlotSlim[] {
   return (
     inventory.bags
       // flatten items of all bags into one list
@@ -100,9 +108,12 @@ function transformInventory(inventory: CharacterInventoryBags) {
         return item != null;
       })
       .map((slot) => {
-        delete slot.dyes;
+        const slotSlim: Partial<Pick<CharacterInventorySlot, 'dyes'>> & CharacterInventorySlotSlim =
+          { ...slot };
 
-        return slot;
+        delete slotSlim.dyes;
+
+        return slotSlim;
       })
   );
 }
@@ -118,10 +129,14 @@ function transformEquipmenttabs(
 
     delete tabSlim.equipment_pvp;
 
-    tabSlim.equipment = tabSlim.equipment.map((slot) => {
-      delete slot.dyes;
+    tabSlim.equipment = tab.equipment.map((slot) => {
+      const slotSlim: Partial<Pick<CharacterEquipmentSlot, 'dyes'>> & CharacterEquipmentSlotSlim = {
+        ...slot,
+      };
 
-      return slot;
+      delete slotSlim.dyes;
+
+      return slotSlim;
     });
 
     return tabSlim;
@@ -136,21 +151,31 @@ function filterEquipmenttabs(equipmentTabs: CharacterEquipmenttabs) {
   });
 }
 
-function transformItems(items: Item[]) {
+function transformItems(items: Item[]): ItemSlim[] {
   return items.map((item) => {
-    delete item.description;
-    delete item.upgrades_from;
-    delete item.upgrades_into;
-
-    const itemSlim: Partial<Pick<Item, 'chat_link' | 'game_types' | 'flags' | 'vendor_value'>> &
+    const itemSlim: Partial<
+      Pick<
+        Item,
+        | 'description'
+        | 'upgrades_from'
+        | 'upgrades_into'
+        | 'chat_link'
+        | 'game_types'
+        | 'flags'
+        | 'vendor_value'
+      >
+    > &
       ItemSlim = { ...item };
 
+    delete itemSlim.description;
+    delete itemSlim.upgrades_from;
+    delete itemSlim.upgrades_into;
     delete itemSlim.chat_link;
     delete itemSlim.flags;
     delete itemSlim.game_types;
     delete itemSlim.vendor_value;
 
-    if (!item.restrictions.length) {
+    if (!itemSlim.restrictions?.length) {
       delete itemSlim.restrictions;
     }
 

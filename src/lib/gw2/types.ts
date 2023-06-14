@@ -768,13 +768,14 @@ export interface ItemstatAttribute {
 }
 
 // "Slim" versions that omit certain props
+export type AccountBankSlotSlim = Omit<AccountBankSlot, 'dyes'>;
 export type AccountMaterialSlim = Omit<AccountMaterial, 'category'>;
-
-export type CharacterEquipmenttabSlim = Omit<CharacterEquipmenttab, 'equipment_pvp'>;
-
+export type CharacterInventorySlotSlim = Omit<CharacterInventorySlot, 'dyes'>;
+export type CharacterEquipmentSlotSlim = Omit<CharacterEquipmentSlot, 'dyes'>;
 export type ItemstatAttributeSlim = Omit<ItemstatAttribute, 'value'>;
-export interface ItemstatSlim extends Omit<Itemstat, 'attributes'> {
-  attributes: ItemstatAttributeSlim[];
+
+export interface CharacterEquipmenttabSlim extends Omit<CharacterEquipmenttab, 'equipment_pvp'> {
+  equipment: CharacterEquipmentSlotSlim[];
 }
 
 export interface ItemSlim
@@ -790,4 +791,8 @@ export interface ItemSlim
     | 'upgrades_into'
   > {
   restrictions?: Array<ItemRestriction>;
+}
+
+export interface ItemstatSlim extends Omit<Itemstat, 'attributes'> {
+  attributes: ItemstatAttributeSlim[];
 }
