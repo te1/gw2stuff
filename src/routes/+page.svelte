@@ -1,11 +1,34 @@
 <script type="ts">
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
-  import { apiKeyValid, validateApiKey } from '$lib/store';
+  import { Loader2, RotateCcw } from 'lucide-svelte';
+  import { apiKey, apiKeyValid, validateApiKey } from '$lib/store';
+  import { Button } from '$components/ui/button';
+
+  let pending = false;
 
   onMount(() => {
     validateApiKey();
   });
+
+  async function fetchData() {
+    pending = true;
+
+    const res = await fetch('/api/data', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ apiKey: $apiKey }),
+    });
+
+    const data = await res.json();
+
+    pending = false;
+
+    console.log(data);
+  }
 </script>
 
 <section class="mb-4">
@@ -27,3 +50,23 @@
     {/if}
   </section>
 {/key}
+
+<section class="mt-4">
+  <Button on:click={fetchData} disabled={!$apiKeyValid || pending} size="sm">
+    {#if pending}
+      <Loader2 class="mr-2 h-5 w-5 animate-spin" />
+    {:else}
+      <RotateCcw class="mr-2 h-5 w-5" />
+    {/if}
+    Fetch Data
+  </Button>
+</section>
+
+<ul class="mt-4">
+  <li>Ascended gear</li>
+  <li>Exotic gear</li>
+  <li>Infinite gathering tools</li>
+  <li>Infinite salvage kits</li>
+  <li>Portal scrolls</li>
+  <li>Living world map currency for ascended trinkets</li>
+</ul>
