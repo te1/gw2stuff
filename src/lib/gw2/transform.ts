@@ -30,6 +30,7 @@ import type {
   ItemDetailsGizmoSlim,
   ItemDetailsSalvageKit,
   ItemDetailsSalvageKitSlim,
+  ItemDetailsSlim,
   ItemDetailsTrinket,
   ItemDetailsTrinketSlim,
   ItemDetailsUpgradeComponent,
@@ -50,6 +51,7 @@ export interface DataSlim {
   characters: CharacterDataSlim[];
   items: ItemSlim[];
   itemstats: ItemstatSlim[];
+  fetchedAt: string;
 }
 
 export interface AccountDataSlim {
@@ -74,6 +76,7 @@ export function transformData(data: Data): DataSlim {
     characters: transformCharacters(data.characters),
     items: transformItems(data.items),
     itemstats: transformItemstats(data.itemstats),
+    fetchedAt: data.fetchedAt,
   };
 }
 
@@ -86,7 +89,7 @@ function transformAccount(account: AccountData): AccountDataSlim {
   };
 }
 
-function transformAccountInventory(inventory: AccountInventory) {
+function transformAccountInventory(inventory: AccountInventory): AccountInventorySlot[] {
   return filterSlots<AccountInventorySlot>(inventory);
 }
 
@@ -100,7 +103,7 @@ function transformAccountBank(bank: AccountBank): AccountBankSlotSlim[] {
   });
 }
 
-function filterSlots<T extends Slot>(slots: Slots) {
+function filterSlots<T extends Slot>(slots: Slots): T[] {
   // filter out empty slots
 
   return slots.filter((slot): slot is T => {
@@ -120,7 +123,7 @@ function transformAccountMaterials(materials: AccountMaterial[]): AccountMateria
   });
 }
 
-function transformCharacters(characters: CharacterData[]) {
+function transformCharacters(characters: CharacterData[]): CharacterDataSlim[] {
   return characters.map((character) => {
     return transformCharacter(character);
   });
@@ -182,7 +185,7 @@ function transformEquipmenttabs(
   });
 }
 
-function filterEquipmenttabs(equipmentTabs: CharacterEquipmenttabs) {
+function filterEquipmenttabs(equipmentTabs: CharacterEquipmenttabs): CharacterEquipmenttab[] {
   // filter out empty equipment tabs
 
   return equipmentTabs.filter((tab) => {
@@ -224,7 +227,7 @@ function transformItems(items: Item[]): ItemSlim[] {
   });
 }
 
-function transformItemDetails(item: Item) {
+function transformItemDetails(item: Item): ItemDetailsSlim | undefined {
   if (!item.details) {
     return;
   }
@@ -376,7 +379,7 @@ function transformItemDetails(item: Item) {
   }
 }
 
-function transformItemstats(itemstats: Itemstat[]) {
+function transformItemstats(itemstats: Itemstat[]): ItemstatSlim[] {
   return itemstats.map((stat) => {
     const statSlim: ItemstatSlim = { ...stat };
 

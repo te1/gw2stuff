@@ -18,6 +18,7 @@ export interface Data {
   characters: CharacterData[];
   items: Item[];
   itemstats: Itemstat[];
+  fetchedAt: string;
 }
 
 export interface AccountData {
@@ -43,14 +44,15 @@ export class Gw2DataCollector {
     ]);
 
     const items = await this.collectItems(account, characters);
-
     const itemstats = await this.collectItemstats(items, account, characters);
+    const fetchedAt = new Date().toISOString();
 
     return {
       account,
       characters,
       items,
       itemstats,
+      fetchedAt,
     };
   }
 
@@ -157,7 +159,7 @@ export class Gw2DataCollector {
     });
   }
 
-  private collectItemIds(account: AccountData, characters: CharacterData[]) {
+  private collectItemIds(account: AccountData, characters: CharacterData[]): number[] {
     const ids = new Set<number>();
 
     for (const item of account.inventory) {
@@ -231,7 +233,11 @@ export class Gw2DataCollector {
     });
   }
 
-  private collectItemstatsIds(items: Item[], account: AccountData, characters: CharacterData[]) {
+  private collectItemstatsIds(
+    items: Item[],
+    account: AccountData,
+    characters: CharacterData[]
+  ): number[] {
     const ids = new Set<number>();
 
     for (const item of items) {
@@ -268,7 +274,7 @@ export class Gw2DataCollector {
   }
 }
 
-function chunked<T>(array: T[], n: number) {
+function chunked<T>(array: T[], n: number): T[][] {
   const chunks: T[][] = [];
 
   for (let i = 0; i < array.length; i += n) {

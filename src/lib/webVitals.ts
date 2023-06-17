@@ -5,7 +5,7 @@ import { onCLS, onFCP, onFID, onLCP, onTTFB, type Metric } from 'web-vitals';
 
 const vitalsUrl = 'https://vitals.vercel-analytics.com/v1/vitals';
 
-function getConnectionSpeed() {
+function getConnectionSpeed(): string {
   if (
     'connection' in navigator &&
     typeof navigator.connection === 'object' &&
