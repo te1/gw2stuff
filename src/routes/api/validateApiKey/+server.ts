@@ -1,5 +1,6 @@
-import { makeGw2Api } from '$lib/gw2/api.server';
 import { json } from '@sveltejs/kit';
+import { makeGw2Api } from '$lib/gw2/api.server';
+import type { TokenPermission } from '$lib/gw2/types.js';
 
 export async function POST({ request, fetch }) {
   const api = await makeGw2Api(request, fetch);
@@ -10,7 +11,7 @@ export async function POST({ request, fetch }) {
 
   if (res.success) {
     if (Array.isArray(res.data.permissions)) {
-      const required = ['account', 'inventories', 'characters'];
+      const required: TokenPermission[] = ['account', 'inventories', 'characters'];
       const pass = required.every((p) => res.data.permissions.includes(p));
 
       if (pass) {

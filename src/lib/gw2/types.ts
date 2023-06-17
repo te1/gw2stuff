@@ -4,18 +4,7 @@ export interface Tokeninfo {
   name: string; // The name given to the API key by the account owner. Warning: The value of this field is not escaped and may contain valid HTML, JavaScript, other code. Handle with care.
 
   // Array of strings describing which permissions the API key has. The array can contain any of:
-  permissions: Array<
-    | 'account' // Grants access to the /v2/account endpoint (This permission is required for all API keys).
-    | 'builds' // Grants access to view each character's equipped specializations and gear.
-    | 'characters' // Grants access to the /v2/characters endpoint.
-    | 'guilds' // Grants access to guild info under the /v2/guild/:id/ sub-endpoints.
-    | 'inventories' // Grants access to inventories in the /v2/characters, /v2/account/bank, and /v2/account/materials endpoints.
-    | 'progression' // Grants access to achievements, dungeon unlock status, mastery point assignments, and general PvE progress.
-    | 'pvp' // Grants access to the /v2/pvp sub-endpoints. (i.e. /v2/pvp/games, /v2/pvp/stats)
-    | 'tradingpost' // Grants access to the /v2/commerce/transactions endpoint.
-    | 'unlocks' // Grants access to the /v2/account/skins and /v2/account/dyes endpoints.
-    | 'wallet' // Grants access to the /v2/account/wallet endpoint.
-  >;
+  permissions: Array<TokenPermission>;
 
   // Additional fields as of schema 2019-05-22T00:00:00.000Z and later:
   type: string; // The type of the access token given. Either APIKey or Subtoken.
@@ -23,6 +12,18 @@ export interface Tokeninfo {
   issued_at?: string; // If a subtoken is given, ISO8601 timestamp indicating when the given subtoken was created.
   urls?: string[]; // If the given subtoken is restricted to a list of URLs, contains an array of strings describing what endpoints are available to this token.
 }
+
+export type TokenPermission =
+  | 'account' // Grants access to the /v2/account endpoint (This permission is required for all API keys).
+  | 'builds' // Grants access to view each character's equipped specializations and gear.
+  | 'characters' // Grants access to the /v2/characters endpoint.
+  | 'guilds' // Grants access to guild info under the /v2/guild/:id/ sub-endpoints.
+  | 'inventories' // Grants access to inventories in the /v2/characters, /v2/account/bank, and /v2/account/materials endpoints.
+  | 'progression' // Grants access to achievements, dungeon unlock status, mastery point assignments, and general PvE progress.
+  | 'pvp' // Grants access to the /v2/pvp sub-endpoints. (i.e. /v2/pvp/games, /v2/pvp/stats)
+  | 'tradingpost' // Grants access to the /v2/commerce/transactions endpoint.
+  | 'unlocks' // Grants access to the /v2/account/skins and /v2/account/dyes endpoints.
+  | 'wallet'; // Grants access to the /v2/account/wallet endpoint.
 
 // https://wiki.guildwars2.com/wiki/API:2/account
 export interface Account {
@@ -799,7 +800,7 @@ export interface ItemSlim
   details?: ItemDetailsSlim;
 }
 
-type ItemDetailsSlim =
+export type ItemDetailsSlim =
   | ItemDetailsArmorSlim
   | ItemDetailsBackSlim
   | ItemDetailsBagSlim
