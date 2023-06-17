@@ -77,10 +77,10 @@ export async function initApiData({ forceRefresh = false } = {}) {
 
     const apiKeyValue = get(apiKey);
     data = await fetchApiData(apiKeyValue);
-  }
 
-  // store data in localstorage
-  apiData.set(data);
+    // store data in localstorage
+    apiData.set(data);
+  }
 
   init(data);
 }

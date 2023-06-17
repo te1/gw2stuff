@@ -61,18 +61,20 @@
     </section>
   {/key}
 
-  <section in:fade|local>
-    {#if $apiDataMeta}
-      Data for account
-      <strong>{$apiDataMeta.accountName}</strong> from
-      <span>{formatDate($apiDataMeta.fetchedAt)}</span>
-      <span class="text-muted-foreground">
-        (<span use:relativeTime={{ date: $apiDataMeta.fetchedAt }} />)
-      </span>
-    {:else}
-      No data yet
-    {/if}
-  </section>
+  {#key $apiDataMeta}
+    <section in:fade|local>
+      {#if $apiDataMeta}
+        Data for account
+        <strong>{$apiDataMeta.accountName}</strong> from
+        <span>{formatDate($apiDataMeta.fetchedAt)}</span>
+        <span class="text-muted-foreground">
+          (<span use:relativeTime={{ date: $apiDataMeta.fetchedAt }} />)
+        </span>
+      {:else}
+        No data yet
+      {/if}
+    </section>
+  {/key}
 
   <section>
     <Button on:click={refreshData} disabled={!$apiKeyValid || pending} size="sm">
