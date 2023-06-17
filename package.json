@@ -44,6 +44,7 @@
     "lucide-svelte": "^0.242.0",
     "radix-svelte": "^0.7.1",
     "svelte-local-storage-store": "^0.4.0",
+    "svelte-relative-time": "^0.0.1",
     "tailwind-merge": "^1.13.1",
     "tailwindcss-animate": "^1.0.6",
     "web-vitals": "^3.3.2"
