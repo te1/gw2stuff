@@ -23,11 +23,16 @@ export class AccountItems {
 export class CharacterItems {
   inventory: ItemSlot[] = [];
   equipmenttabs: Equipmenttab[] = [];
+  gatheringTools: ItemSlot[] = [];
 
   constructor(public characterName: string) {}
 
   isEmpty() {
-    return !this.inventory.length && this.equipmenttabs.every((tab) => tab.isEmpty());
+    return (
+      !this.inventory.length &&
+      this.equipmenttabs.every((tab) => tab.isEmpty()) &&
+      !this.gatheringTools.length
+    );
   }
 }
 
@@ -42,7 +47,7 @@ export class Equipmenttab {
 }
 
 export class ItemSlot {
-  constructor(public itemId: number, public count: number, public itemData: ItemSlim) {}
+  constructor(public itemId: number, public count: number | null, public itemData: ItemSlim) {}
 }
 
 export const characterInfo = new Map<string, CharacterInfo>();
@@ -155,13 +160,21 @@ function getItems(
         itemData = getItemData(slot.id);
 
         if (itemData?.type === itemType) {
-          equipmenttab.equipment.push(new ItemSlot(slot.id, slot.count, itemData));
+          equipmenttab.equipment.push(new ItemSlot(slot.id, null, itemData));
         }
       }
 
-      // if (!equipmenttab.isEmpty()) {
-      items.equipmenttabs.push(equipmenttab);
-      // }
+      if (!equipmenttab.isEmpty()) {
+        items.equipmenttabs.push(equipmenttab);
+      }
+    }
+
+    for (const slot of character.gatheringTools) {
+      itemData = getItemData(slot.id);
+
+      if (itemData?.type === itemType) {
+        items.gatheringTools.push(new ItemSlot(slot.id, null, itemData));
+      }
     }
 
     if (!items.isEmpty()) {

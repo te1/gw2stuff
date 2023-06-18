@@ -7,6 +7,7 @@ import type {
   AccountInventory,
   AccountMaterial,
   CharacterCore,
+  CharacterEquipment,
   CharacterEquipmenttab,
   CharacterInventoryBags,
   Item,
@@ -31,6 +32,7 @@ export interface AccountData {
 export interface CharacterData {
   core: CharacterCore;
   inventory: CharacterInventoryBags;
+  equipment: CharacterEquipment;
   equipmenttabs: CharacterEquipmenttab[];
 }
 
@@ -106,9 +108,10 @@ export class Gw2DataCollector {
   }
 
   async collectCharacter(characterName: string): Promise<CharacterData> {
-    const [core, inventory, equipmenttabs] = await Promise.all([
+    const [core, inventory, equipment, equipmenttabs] = await Promise.all([
       this.api.characterCore(characterName),
       this.api.characterInventory(characterName),
+      this.api.characterEquipment(characterName),
       this.api.characterEquipmenttabs(characterName),
     ]);
 
@@ -120,6 +123,10 @@ export class Gw2DataCollector {
       throw error(400, 'collectCharacter: inventory, ' + inventory.message);
     }
 
+    if (!equipment.success) {
+      throw error(400, 'collectCharacter: equipment, ' + equipment.message);
+    }
+
     if (!equipmenttabs.success) {
       throw error(400, 'collectCharacter: equipmenttabs, ' + equipmenttabs.message);
     }
@@ -127,6 +134,7 @@ export class Gw2DataCollector {
     return {
       core: core.data,
       inventory: inventory.data,
+      equipment: equipment.data,
       equipmenttabs: equipmenttabs.data,
     };
   }
@@ -189,11 +197,13 @@ export class Gw2DataCollector {
         }
       }
 
+      for (const item of character.equipment.equipment) {
+        ids.add(item.id);
+      }
+
       for (const tab of character.equipmenttabs) {
         for (const item of tab.equipment) {
-          if (item.count > 0) {
-            ids.add(item.id);
-          }
+          ids.add(item.id);
         }
       }
     }
@@ -258,6 +268,12 @@ export class Gw2DataCollector {
           if (item && item.stats?.id) {
             ids.add(item.stats?.id);
           }
+        }
+      }
+
+      for (const item of character.equipment.equipment) {
+        if (item.stats?.id) {
+          ids.add(item.stats?.id);
         }
       }
 

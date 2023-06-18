@@ -58,7 +58,6 @@ export type Slots = Array<Slot | null>;
 
 export interface Slot {
   id: number; // The item's ID.
-  count: number; // The amount of items in the item stack.
   charges?: number; // The amount of charges remaining on the item.
   skin?: number; // The skin applied to the item, if it is different from its original. Can be resolved against /v2/skins.
   upgrades?: number[]; // An array of item IDs for each rune or sigil applied to the item.
@@ -69,6 +68,7 @@ export interface Slot {
 export type AccountInventory = Array<AccountInventorySlot | null>;
 
 export interface AccountInventorySlot extends Slot {
+  count: number; // The amount of items in the item stack.
   binding?: 'Account'; // The current binding of the item. If present, the only possible value is Account.
 }
 
@@ -76,6 +76,7 @@ export interface AccountInventorySlot extends Slot {
 export type AccountBank = Array<AccountBankSlot | null>;
 
 export interface AccountBankSlot extends Slot {
+  count: number; // The amount of items in the item stack.
   dyes?: number[]; // The IDs of the dyes applied to the item. Can be resolved against /v2/colors.
   upgrade_slot_indices?: number[]; // The slot occupied by the upgrade at the corresponding position in upgrades.
   binding?: 'Account' | 'Character'; // The current binding of the item. Either Account or Character if present.
@@ -140,10 +141,60 @@ export interface CharacterInventoryBag {
 export type CharacterInventory = Array<CharacterInventorySlot | null>;
 
 export interface CharacterInventorySlot extends Slot {
+  count: number; // The amount of items in the item stack.
   stats?: ItemStats; // The stats of the item.
   dyes?: number[]; // Array of selected dyes for the equipment piece. Values default to null if no dye is selected. Colors can be resolved against v2/colors
   binding?: 'Character' | 'Account'; // describes which kind of binding the item has. Possible values: Character, Account
   bound_to?: string; // only if character bound, Name of the character the item is bound to.
+}
+
+// https://wiki.guildwars2.com/wiki/API:2/characters/:id/equipment
+export interface CharacterEquipment {
+  // An array containing an entry for each piece of equipment currently on the selected character.
+  equipment: CharacterEquipmentSlot[];
+}
+
+export interface CharacterEquipmentSlot extends Slot {
+  // The equipment slot in which the item is slotted. This value is optional on schema 2019-12-19T00:00:00.000Z or later, will be missing if equipment is in an inactive tab. Possible values:
+  slot:
+    | 'HelmAquatic'
+    | 'Backpack'
+    | 'Coat'
+    | 'Boots'
+    | 'Gloves'
+    | 'Helm'
+    | 'Leggings'
+    | 'Shoulders'
+    | 'Accessory1'
+    | 'Accessory2'
+    | 'Ring1'
+    | 'Ring2'
+    | 'Amulet'
+    | 'WeaponAquaticA'
+    | 'WeaponAquaticB'
+    | 'WeaponA1'
+    | 'WeaponA2'
+    | 'WeaponB1'
+    | 'WeaponB2'
+    | 'Sickle'
+    | 'Axe'
+    | 'Pick';
+
+  stats?: ItemStats; // Contains information on the stats chosen if the item offers an option for stats/prefix.
+
+  // describes which kind of binding the item has. Possible values:
+  binding?: 'Character' | 'Account';
+
+  // describes where this item is stored. Available on schema 2019-12-19T00:00:00.000Z or later. Possible values:
+  location:
+    | 'Equipped' // equipped in the active tab.
+    | 'Armory' // equipped in an inactive tabs.
+    | 'EquippedFromLegendaryArmory' // if the item is stored in the account-wide legendary armory, but equipped in the active tab.
+    | 'LegendaryArmory'; // if the item is stored in the account-wide legendary armory, but equipped in an inactive tabs.
+
+  tabs: number[]; // identifies which tabs this particular item is reused in. Available on schema 2019-12-19T00:00:00.000Z or later.
+  bound_to?: string; // only if character bound, Name of the character the item is bound to.
+  dyes: number[]; // Array of selected dyes for the equipment piece. Values default to null if no dye is selected. Colors can be resolved against v2/colors
 }
 
 // https://wiki.guildwars2.com/wiki/API:2/characters/:id/equipmenttabs
@@ -153,7 +204,7 @@ export interface CharacterEquipmenttab {
   tab: number; // The "id" of this tab. (The position at which it resides.)
   name: string; // The name given to the equipment combination.
   is_active: boolean; // Whether or not this is the tab selected on the character currently.
-  equipment: CharacterEquipmentSlot[]; // Contains an object for each equiped piece of equipment.
+  equipment: CharacterEquipmenttabSlot[]; // Contains an object for each equiped piece of equipment.
 
   // Contains the following key-value pairs:
   equipment_pvp: {
@@ -164,7 +215,7 @@ export interface CharacterEquipmenttab {
   };
 }
 
-export interface CharacterEquipmentSlot extends Slot {
+export interface CharacterEquipmenttabSlot extends Slot {
   // In which slot the equipment piece is equiped. Possible values
   slot:
     | 'Helm'

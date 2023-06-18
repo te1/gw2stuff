@@ -4,6 +4,7 @@ import type {
   AccountInventory,
   AccountMaterial,
   CharacterCore,
+  CharacterEquipment,
   CharacterEquipmenttabs,
   CharacterInventoryBags,
   Item,
@@ -106,6 +107,10 @@ export class Gw2Api {
 
   async characterInventory(characterName: string): Promise<ApiResult<CharacterInventoryBags>> {
     return this.get<CharacterInventoryBags>(`v2/characters/${characterName}/inventory`);
+  }
+
+  async characterEquipment(characterName: string): Promise<ApiResult<CharacterEquipment>> {
+    return this.get<CharacterEquipment>(`v2/characters/${characterName}/equipment`);
   }
 
   async characterEquipmenttabs(characterName: string): Promise<ApiResult<CharacterEquipmenttabs>> {

@@ -3,7 +3,7 @@
 import type {
   AccountBankSlot,
   AccountMaterial,
-  CharacterEquipmentSlot,
+  CharacterEquipmenttabSlot,
   CharacterEquipmenttab,
   CharacterInventorySlot,
   Item,
@@ -29,7 +29,7 @@ import type {
 export type AccountBankSlotSlim = Omit<AccountBankSlot, 'dyes'>;
 export type AccountMaterialSlim = Omit<AccountMaterial, 'category'>;
 export type CharacterInventorySlotSlim = Omit<CharacterInventorySlot, 'dyes'>;
-export type CharacterEquipmentSlotSlim = Omit<CharacterEquipmentSlot, 'dyes'>;
+export type CharacterEquipmentSlotSlim = Omit<CharacterEquipmenttabSlot, 'dyes'>;
 export type ItemstatAttributeSlim = Omit<ItemstatAttribute, 'value'>;
 
 export interface CharacterEquipmenttabSlim extends Omit<CharacterEquipmenttab, 'equipment_pvp'> {

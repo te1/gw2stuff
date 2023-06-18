@@ -5,7 +5,7 @@ import type {
   AccountInventory,
   AccountInventorySlot,
   AccountMaterial,
-  CharacterEquipmentSlot,
+  CharacterEquipmenttabSlot,
   CharacterEquipmenttab,
   CharacterEquipmenttabs,
   CharacterInventoryBags,
@@ -26,6 +26,7 @@ import type {
   ItemstatAttribute,
   Slot,
   Slots,
+  CharacterEquipment,
 } from './types';
 import type {
   AccountBankSlotSlim,
@@ -70,6 +71,13 @@ export interface CharacterDataSlim {
   level: number;
   inventory: CharacterInventorySlotSlim[];
   equipmenttabs: CharacterEquipmenttabSlim[];
+  gatheringTools: CharacterGatheringTool[];
+}
+
+export interface CharacterGatheringTool {
+  id: number;
+  slot: 'Sickle' | 'Axe' | 'Pick';
+  binding?: 'Character' | 'Account';
 }
 
 export function transformData(data: Data): DataSlim {
@@ -139,6 +147,7 @@ function transformCharacter(character: CharacterData): CharacterDataSlim {
     level: character.core.level,
     inventory: transformInventory(character.inventory),
     equipmenttabs: transformEquipmenttabs(character.equipmenttabs),
+    gatheringTools: transformEquipment(character.equipment),
   };
 }
 
@@ -174,7 +183,8 @@ function transformEquipmenttabs(
     delete tabSlim.equipment_pvp;
 
     tabSlim.equipment = tab.equipment.map((slot) => {
-      const slotSlim: Partial<Pick<CharacterEquipmentSlot, 'dyes'>> & CharacterEquipmentSlotSlim = {
+      const slotSlim: Partial<Pick<CharacterEquipmenttabSlot, 'dyes'>> &
+        CharacterEquipmentSlotSlim = {
         ...slot,
       };
 
@@ -227,6 +237,22 @@ function transformItems(items: Item[]): ItemSlim[] {
 
     return itemSlim;
   });
+}
+
+function transformEquipment(equipment: CharacterEquipment): CharacterGatheringTool[] {
+  const result: CharacterGatheringTool[] = [];
+
+  for (const slot of equipment.equipment) {
+    if (slot.slot === 'Sickle' || slot.slot === 'Axe' || slot.slot === 'Pick') {
+      result.push({
+        id: slot.id,
+        slot: slot.slot,
+        binding: slot.binding,
+      });
+    }
+  }
+
+  return result;
 }
 
 function transformItemDetails(item: Item): ItemDetailsSlim | undefined {
