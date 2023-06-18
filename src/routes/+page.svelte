@@ -96,7 +96,9 @@
       <li>
         <a href="/gathering" class="link">(Infinite) Gathering tools</a>
       </li>
-      <li>Infinite salvage kits</li>
+      <li>
+        <a href="/salvage-kits" class="link">Salvage kits</a>
+      </li>
       <li>Portal scrolls</li>
       <li>Living world map currency for <span class="text-ascended">ascended</span> trinkets</li>
     </ul>

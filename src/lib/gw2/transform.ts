@@ -78,6 +78,7 @@ export interface CharacterGatheringTool {
   id: number;
   slot: 'Sickle' | 'Axe' | 'Pick';
   binding?: 'Character' | 'Account';
+  charges?: number;
 }
 
 export function transformData(data: Data): DataSlim {
@@ -248,6 +249,7 @@ function transformEquipment(equipment: CharacterEquipment): CharacterGatheringTo
         id: slot.id,
         slot: slot.slot,
         binding: slot.binding,
+        charges: slot.charges,
       });
     }
   }

@@ -47,7 +47,12 @@ export class Equipmenttab {
 }
 
 export class ItemSlot {
-  constructor(public itemId: number, public count: number | null, public itemData: ItemSlim) {}
+  constructor(
+    public itemId: number,
+    public count: number | undefined,
+    public charges: number | undefined,
+    public itemData: ItemSlim
+  ) {}
 }
 
 export const characterInfo = new Map<string, CharacterInfo>();
@@ -116,7 +121,7 @@ function getItems(
     itemData = getItemData(slot.id);
 
     if (itemData?.type === itemType) {
-      locations.account.inventory.push(new ItemSlot(slot.id, slot.count, itemData));
+      locations.account.inventory.push(new ItemSlot(slot.id, slot.count, slot.charges, itemData));
     }
   }
 
@@ -124,7 +129,7 @@ function getItems(
     itemData = getItemData(slot.id);
 
     if (itemData?.type === itemType) {
-      locations.account.bank.push(new ItemSlot(slot.id, slot.count, itemData));
+      locations.account.bank.push(new ItemSlot(slot.id, slot.count, slot.charges, itemData));
     }
   }
 
@@ -133,7 +138,7 @@ function getItems(
       itemData = getItemData(material.id);
 
       if (itemData?.type === itemType) {
-        locations.account.bank.push(new ItemSlot(material.id, material.count, itemData));
+        locations.account.bank.push(new ItemSlot(material.id, material.count, undefined, itemData));
       }
     }
   }
@@ -149,7 +154,7 @@ function getItems(
       itemData = getItemData(slot.id);
 
       if (itemData?.type === itemType) {
-        items.inventory.push(new ItemSlot(slot.id, slot.count, itemData));
+        items.inventory.push(new ItemSlot(slot.id, slot.count, slot.charges, itemData));
       }
     }
 
@@ -160,7 +165,7 @@ function getItems(
         itemData = getItemData(slot.id);
 
         if (itemData?.type === itemType) {
-          equipmenttab.equipment.push(new ItemSlot(slot.id, null, itemData));
+          equipmenttab.equipment.push(new ItemSlot(slot.id, undefined, slot.charges, itemData));
         }
       }
 
@@ -173,7 +178,7 @@ function getItems(
       itemData = getItemData(slot.id);
 
       if (itemData?.type === itemType) {
-        items.gatheringTools.push(new ItemSlot(slot.id, null, itemData));
+        items.gatheringTools.push(new ItemSlot(slot.id, undefined, undefined, itemData));
       }
     }
 
@@ -185,6 +190,10 @@ function getItems(
   return locations;
 }
 
-export function getGatheringTools(apiData: DataSlim) {
+export function getGatheringTools(apiData: DataSlim): ItemLocations {
   return getItems(apiData, 'Gathering', { includeMaterials: false });
+}
+
+export function getSalvageKits(apiData: DataSlim): ItemLocations {
+  return getItems(apiData, 'Tool', { includeMaterials: false });
 }

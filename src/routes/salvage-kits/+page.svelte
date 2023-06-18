@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { apiData } from '$lib/store';
-  import { ItemLocations, getGatheringTools } from '$lib/gw2/data';
+  import { ItemLocations, getSalvageKits } from '$lib/gw2/data';
 
   let data: ItemLocations;
 
@@ -11,7 +11,7 @@
       return goto('/');
     }
 
-    data = getGatheringTools($apiData);
+    data = getSalvageKits($apiData);
 
     console.log(data);
   });
