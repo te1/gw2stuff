@@ -203,25 +203,7 @@ interface ItemBase {
   description?: string; // The item description.
 
   // The item type (see below). Possible value
-  type:
-    | 'Armor' // Armor
-    | 'Back' // Back item
-    | 'Bag' // Bags
-    | 'Consumable' // Consumables
-    | 'Container' // Containers
-    | 'CraftingMaterial' // Crafting materials
-    | 'Gathering' // Gathering tools, baits and lures
-    | 'Gizmo' // Gizmos
-    | 'JadeTechModule' // Sensory Array and Service Chip modules
-    | 'Key'
-    | 'MiniPet' // Miniatures
-    | 'PowerCore' // Power Cores
-    | 'Tool' // Salvage kits
-    | 'Trait' // Trait guides
-    | 'Trinket' // Trinkets
-    | 'Trophy' // Trophies
-    | 'UpgradeComponent' // Upgrade components
-    | 'Weapon'; // Weapons
+  type: ItemType;
 
   // The item rarity. Possible values
   rarity: 'Junk' | 'Basic' | 'Fine' | 'Masterwork' | 'Rare' | 'Exotic' | 'Ascended' | 'Legendary';
@@ -272,6 +254,26 @@ interface ItemBase {
 
   details?: ItemDetails; // Additional item details if applicable, depending on the item type (see below).
 }
+
+export type ItemType =
+  | 'Armor' // Armor
+  | 'Back' // Back item
+  | 'Bag' // Bags
+  | 'Consumable' // Consumables
+  | 'Container' // Containers
+  | 'CraftingMaterial' // Crafting materials
+  | 'Gathering' // Gathering tools, baits and lures
+  | 'Gizmo' // Gizmos
+  | 'JadeTechModule' // Sensory Array and Service Chip modules
+  | 'Key'
+  | 'MiniPet' // Miniatures
+  | 'PowerCore' // Power Cores
+  | 'Tool' // Salvage kits
+  | 'Trait' // Trait guides
+  | 'Trinket' // Trinkets
+  | 'Trophy' // Trophies
+  | 'UpgradeComponent' // Upgrade components
+  | 'Weapon'; // Weapons
 
 export type ItemRestriction =
   | 'Asura'

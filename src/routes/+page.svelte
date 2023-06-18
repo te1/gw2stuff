@@ -88,12 +88,14 @@
   </section>
 
   <section class="mt-2">
-    <H2 class="mb-2">Quick Links</H2>
+    <H2 class="mb-2">Stuff</H2>
 
     <ul class="ml-4 list-disc">
       <li><span class="text-ascended">Ascended</span> gear</li>
       <li><span class="text-exotic">Exotic</span> gear</li>
-      <li>Infinite gathering tools</li>
+      <li>
+        <a href="/gathering" class="link">(Infinite) Gathering tools</a>
+      </li>
       <li>Infinite salvage kits</li>
       <li>Portal scrolls</li>
       <li>Living world map currency for <span class="text-ascended">ascended</span> trinkets</li>
