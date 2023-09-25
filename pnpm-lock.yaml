@@ -27,8 +27,8 @@ dependencies:
     specifier: ^0.4.0
     version: 0.4.0(svelte@3.59.1)
   svelte-relative-time:
-    specifier: ^0.0.1
-    version: 0.0.1
+    specifier: ^0.0.4
+    version: 0.0.4(svelte@3.59.1)
   tailwind-merge:
     specifier: ^1.13.1
     version: 1.13.1
@@ -2260,8 +2260,12 @@ packages:
       typescript: 5.1.3
     dev: true
 
-  /svelte-relative-time@0.0.1:
-    resolution: {integrity: sha512-7dSCYTjxdMrgAPIRJAX3vQ4tTr08OG+xytn3GFNIfU+Jfyeb6FTdctcm0Q0wwp1FzS8pxsNy8ansgXLcN/Rrpg==}
+  /svelte-relative-time@0.0.4(svelte@3.59.1):
+    resolution: {integrity: sha512-R6z6E0BqgqbSdhB40rRaqN9oAWLtiAK7b3G/7BxAQztn8q8+oa1mpDljvtSAW4xb471HA4tn8R+9/v/JhpeFtA==}
+    peerDependencies:
+      svelte: ^3.54.0 || ^4.0.0
+    dependencies:
+      svelte: 3.59.1
     dev: false
 
   /svelte@3.59.1:
