@@ -40,7 +40,7 @@
     "@sveltejs/adapter-vercel": "^3.0.1",
     "@vercel/analytics": "^1.0.1",
     "class-variance-authority": "^0.7.0",
-    "clsx": "^1.2.1",
+    "clsx": "^2.0.0",
     "lucide-svelte": "^0.279.0",
     "radix-svelte": "^0.7.1",
     "svelte-local-storage-store": "^0.6.0",
