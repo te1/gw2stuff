@@ -39,6 +39,7 @@
   "dependencies": {
     "@sveltejs/adapter-vercel": "^3.0.1",
     "@vercel/analytics": "^1.0.1",
+    "bits-ui": "^0.5.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "lucide-svelte": "^0.279.0",
@@ -46,6 +47,7 @@
     "svelte-local-storage-store": "^0.6.0",
     "svelte-relative-time": "^0.0.4",
     "tailwind-merge": "^1.13.1",
+    "tailwind-variants": "^0.1.14",
     "tailwindcss-animate": "^1.0.6",
     "web-vitals": "^3.3.2"
   }
