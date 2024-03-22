@@ -21,8 +21,8 @@ dependencies:
     specifier: ^2.0.0
     version: 2.0.0
   lucide-svelte:
-    specifier: ^0.279.0
-    version: 0.279.0(svelte@4.2.1)
+    specifier: ^0.363.0
+    version: 0.363.0(svelte@4.2.1)
   radix-svelte:
     specifier: ^0.9.0
     version: 0.9.0(svelte@4.2.1)
@@ -1578,10 +1578,10 @@ packages:
     dependencies:
       yallist: 4.0.0
 
-  /lucide-svelte@0.279.0(svelte@4.2.1):
-    resolution: {integrity: sha512-u9j8tMPxWsv5iXJvrUU/jpyML/k49flr7440UE8QM9V3u0OZt5+qaY5TMiPDTVRMdEELBg4d4ueW1+3Mo3VT4A==}
+  /lucide-svelte@0.363.0(svelte@4.2.1):
+    resolution: {integrity: sha512-zpUBFtMEEOOjILgiDX48ijibUww3JUCLrMo5YDGX/De/m6I+vn+oWIGvdyZtuc8nz/P8xHW9vWLKzIWeMrRYbA==}
     peerDependencies:
-      svelte: '>=3 <5'
+      svelte: ^3 || ^4 || ^5.0.0-next.42
     dependencies:
       svelte: 4.2.1
     dev: false
