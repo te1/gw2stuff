@@ -39,7 +39,7 @@
   "dependencies": {
     "@sveltejs/adapter-vercel": "^3.0.1",
     "@vercel/analytics": "^1.0.1",
-    "bits-ui": "^0.5.7",
+    "bits-ui": "^0.21.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "lucide-svelte": "^0.279.0",
